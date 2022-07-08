@@ -1,34 +1,27 @@
 package com.example.app_server;
 
 import android.content.Intent;
-import android.database.Observable;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.schedulers.Schedulers;
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
-import java.net.HttpURLConnection;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 public class MainActivity extends AppCompatActivity {
     private TextView signUpTV;
     private EditText userIdET, passwordET;
     private TextView submitTV;
-    private final String BASE_URL = "https://f1a0-192-249-19-234.jp.ngrok.io";
+    private final String BASE_URL = "https://1226-192-249-19-234.jp.ngrok.io";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

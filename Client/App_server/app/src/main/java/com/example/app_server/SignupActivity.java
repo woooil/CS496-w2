@@ -1,5 +1,6 @@
 package com.example.app_server;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import android.view.View;
@@ -20,7 +21,8 @@ import java.util.concurrent.TimeUnit;
 public class SignupActivity extends AppCompatActivity {
 
     private Button adduser;
-    private final String BASE_URL = "https://f1a0-192-249-19-234.jp.ngrok.io";
+    private Button idcheck;
+    private final String BASE_URL = "https://1226-192-249-19-234.jp.ngrok.io";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,24 +35,50 @@ public class SignupActivity extends AppCompatActivity {
         EditText email = (EditText)findViewById(R.id.email);
         EditText nickname = (EditText)findViewById(R.id.nickname);
 
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .connectTimeout(30, TimeUnit.MINUTES)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
+                .build();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .client(okHttpClient)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        JsonPlaceHolderApi jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
+
+
+        idcheck = (Button) this.findViewById(R.id.idCheck);
+        idcheck.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Call<Object> call = jsonPlaceHolderApi.check(user_id.getText().toString());
+
+                call.enqueue(new Callback<Object>() {
+                    @Override
+                    public void onResponse(Call<Object> call, Response<Object> response) {
+                        Toast.makeText(getApplicationContext(), response.body().toString(), Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onFailure(Call<Object> call, Throwable t) {
+                        Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+
+
+            }
+        });
+
+
 
         adduser = (Button) this.findViewById(R.id.add_user);
         adduser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                        .connectTimeout(30, TimeUnit.MINUTES)
-                        .readTimeout(30, TimeUnit.SECONDS)
-                        .writeTimeout(30, TimeUnit.SECONDS)
-                        .build();
-
-                Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl(BASE_URL)
-                        .client(okHttpClient)
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .build();
-
-                JsonPlaceHolderApi jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
 
                 Call<Object> call = jsonPlaceHolderApi.signup(
                         new UserInfo(user_id.getText().toString(),
@@ -62,11 +90,9 @@ public class SignupActivity extends AppCompatActivity {
                 call.enqueue(new Callback<Object>() {
                     @Override
                     public void onResponse(Call<Object> call, Response<Object> response) {
-
                         Toast.makeText(getApplicationContext(), response.body().toString(), Toast.LENGTH_LONG).show();
-
-
-
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        startActivity(intent);
                     }
 
                     @Override
@@ -75,7 +101,6 @@ public class SignupActivity extends AppCompatActivity {
                     }
                 });
 
-//                Toast.makeText(getApplicationContext(), "sss", Toast.LENGTH_SHORT).show();
             }
         });
 
