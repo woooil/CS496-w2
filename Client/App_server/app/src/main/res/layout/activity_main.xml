@@ -8,16 +8,93 @@
         android:padding="8dp"
         tools:context=".MainActivity">
 
-    <androidx.core.widget.NestedScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        >
         <TextView
-                android:id="@+id/text_view_result"
+            android:id="@+id/titleTV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TITLE"
+            android:textSize="50dp"
+            android:gravity="center"
+            />
+        <LinearLayout
+            android:id="@+id/idLL"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/titleTV"
+            android:gravity="center"
+            >
+            <TextView
+                android:id="@+id/idTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#000" />
-
-    </androidx.core.widget.NestedScrollView>
+                android:text="ID: "
+                />
+            <EditText
+                android:id="@+id/idET"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/passwordLL"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/idLL"
+            android:gravity="center"
+            >
+            <TextView
+                android:id="@+id/passwordTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Password: "
+                />
+            <EditText
+                android:id="@+id/passwordET"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                />
+        </LinearLayout>
+        <TextView
+            android:id="@+id/submitTV"
+            android:layout_width="100dp"
+            android:layout_height="30dp"
+            android:text="Log In"
+            android:gravity="center"
+            android:layout_below="@id/passwordLL"
+            android:layout_centerHorizontal="true"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/submitTV"
+            android:gravity="center"
+            >
+            <TextView
+                android:id="@+id/signUpTV"
+                android:layout_width="100dp"
+                android:layout_height="30dp"
+                android:text="Sign Up"
+                android:gravity="center"
+                android:layout_below="@id/submitTV"
+                android:layout_centerHorizontal="true"
+                />
+            <TextView
+                android:id="@+id/kakaoTV"
+                android:layout_width="150dp"
+                android:layout_height="30dp"
+                android:text="Log in with Kakao"
+                android:gravity="center"
+                android:layout_centerHorizontal="true"
+                />
+        </LinearLayout>
+    </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
