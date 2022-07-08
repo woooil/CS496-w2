@@ -41,6 +41,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        
+        if (SharedPrefManager.getInstance(this).isLoggedIn()) {
+            finish();
+            startActivity(new Intent(this, ListActivity.class));
+            return;
+        }
 
         signUpTV = findViewById(R.id.signUpTV);
         userIdET = findViewById(R.id.idET);
@@ -92,9 +98,10 @@ public class MainActivity extends AppCompatActivity {
                                         obj.get("nickname").toString()
                                     );
                                     
-                                    Intent i = new Intent(MainActivity.this, ListActivity.class);
-                                    i.putExtra("user", user);
-                                    MainActivity.this.startActivity(i);
+                                    SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
+                                   
+                                    finish();
+                                    startActivity(new Intent(getApplicationContext(), ListActivity.class));
                                 } catch (JSONException e) {
                                     Log.e(null, "JSON error occurred: " + e);
                                 }
