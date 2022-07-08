@@ -3,6 +3,7 @@ package com.example.app_server;
 import android.os.Bundle;
 
 import android.view.View;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.app_server.databinding.ActivitySignupBinding;
 import okhttp3.OkHttpClient;
@@ -40,23 +41,21 @@ public class SignupActivity extends AppCompatActivity {
 
                 JsonPlaceHolderApi jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
 
-                Call<Object> call = jsonPlaceHolderApi.getPosts();
+                Call<Object> call = jsonPlaceHolderApi.signup();
 
                 call.enqueue(new Callback<Object>() {
                     @Override
                     public void onResponse(Call<Object> call, Response<Object> response) {
 
-                        if (!response.isSuccessful()) {
-                            return;
-                        }
+                        Toast.makeText(getApplicationContext(), response.body().toString(), Toast.LENGTH_LONG).show();
 
-                        Object posts = response.body();
+
 
                     }
 
                     @Override
                     public void onFailure(Call<Object> call, Throwable t) {
-                        textViewResult.setText(t.getMessage());
+                        Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
             }
