@@ -64,7 +64,6 @@ router.post('/login', (req, res, next) => {
     var post_data = req.body;
     var user_id = post_data.user_id;
     var user_password = post_data.password;
-    console.log('login: ', req);
     
     db.query('select * from users where user_id=?', [user_id], function(err, result, fields) {
         db.on('error', function(err) {
@@ -72,11 +71,17 @@ router.post('/login', (req, res, next) => {
         });
         
         if (result && result.length) {
-            bcrypt.compare(user_password, result[0].pwd, (err, result) => {
+            bcrypt.compare(user_password, result[0].pwd, (err, success) => {
                 if(err) throw err;
-                if (result == true) 
-                    // res.json('WOWOWOWOW');
-                    res.end(JSON.stringify(result[0]));
+                if (success == true) {
+                    var json = {
+                        user_id: result[0].user_id,
+                        email: result[0].email,
+                        nickname: result[0].nickname
+                    }
+                    res.json(json);
+                    console.log(result[0]);
+                }
                 else
                     res.end(JSON.stringify('Wrong password!'));
             });
