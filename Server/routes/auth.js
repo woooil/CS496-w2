@@ -1,14 +1,19 @@
 var express = require('express');
 const db = require('../model/db');
 var router = express.Router();
-let crypto = require('crypto');
+const bcrypt = require('bcrypt')
 
 /* GET home page. */
 router.post('/register', function (req, res) {
-    db.query("insert into test (user_id, pwd, email) values(?, ?, ?)", ["wooil", "wooil123", "wooil@naver.com"], (err, result) =>{
-        if(err) throw err;
+    console.log("req는: ", req);
+    const encryptedPwd = bcrypt.hashSync(req.body.pwd1, 10);
+    console.log("encryptedpwd : ", encryptedPwd);
 
-        console.log("회원가입 성공");
+    db.query("insert into users (user_id, pwd, email, nickname) values(?, ?, ?, ?)", [req.body.user_id, encryptedPwd, req.body.email, req.body.nickname], (err, result) =>{
+        if(err) throw err;
+        
+       
+
         res.json("데이터 insert 성공");
     })
 });
