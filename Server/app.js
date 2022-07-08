@@ -1,3 +1,4 @@
+let uuid = require('uuid');
 let express = require('express');
 let path = require('path');
 let favicon = require('static-favicon');
