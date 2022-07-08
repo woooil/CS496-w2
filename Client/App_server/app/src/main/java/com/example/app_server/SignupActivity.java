@@ -3,6 +3,9 @@ package com.example.app_server;
 import android.os.Bundle;
 
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.app_server.databinding.ActivitySignupBinding;
 import okhttp3.OkHttpClient;
@@ -16,51 +19,64 @@ import java.util.concurrent.TimeUnit;
 
 public class SignupActivity extends AppCompatActivity {
 
-    private ActivitySignupBinding binding;
+    private Button adduser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
-//        binding.addUser.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                OkHttpClient okHttpClient = new OkHttpClient.Builder()
-//                        .connectTimeout(30, TimeUnit.MINUTES)
-//                        .readTimeout(30, TimeUnit.SECONDS)
-//                        .writeTimeout(30, TimeUnit.SECONDS)
-//                        .build();
-//
-//                Retrofit retrofit = new Retrofit.Builder()
-//                        .baseUrl("https://2dc8-192-249-19-234.jp.ngrok.io")
-//                        .client(okHttpClient)
-//                        .addConverterFactory(GsonConverterFactory.create())
-//                        .build();
-//
-//                JsonPlaceHolderApi jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
-//
-//                Call<Object> call = jsonPlaceHolderApi.getPosts();
-//
-//                call.enqueue(new Callback<Object>() {
-//                    @Override
-//                    public void onResponse(Call<Object> call, Response<Object> response) {
-//
-//                        if (!response.isSuccessful()) {
-//                            return;
-//                        }
-//
-//                        Object posts = response.body();
-//
-//                    }
-//
-//                    @Override
-//                    public void onFailure(Call<Object> call, Throwable t) {
-//                        textViewResult.setText(t.getMessage());
-//                    }
-//                });
-//            }
-//        });
+        EditText user_id = (EditText)findViewById(R.id.user_id);
+        EditText pwd1 = (EditText)findViewById(R.id.pwd1);
+        EditText pwd2 = (EditText)findViewById(R.id.pwd2);
+        EditText email = (EditText)findViewById(R.id.email);
+        EditText nickname = (EditText)findViewById(R.id.nickname);
+
+
+        adduser = (Button) this.findViewById(R.id.add_user);
+        adduser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                        .connectTimeout(30, TimeUnit.MINUTES)
+                        .readTimeout(30, TimeUnit.SECONDS)
+                        .writeTimeout(30, TimeUnit.SECONDS)
+                        .build();
+
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl("https://1226-192-249-19-234.jp.ngrok.io")
+                        .client(okHttpClient)
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+
+                JsonPlaceHolderApi jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
+
+                Call<Object> call = jsonPlaceHolderApi.signup(
+                        new UserInfo(user_id.getText().toString(),
+                                pwd1.getText().toString(),
+                                pwd2.getText().toString(),
+                                email.getText().toString(),
+                                nickname.getText().toString()));
+
+                call.enqueue(new Callback<Object>() {
+                    @Override
+                    public void onResponse(Call<Object> call, Response<Object> response) {
+
+                        Toast.makeText(getApplicationContext(), response.body().toString(), Toast.LENGTH_LONG).show();
+
+
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<Object> call, Throwable t) {
+                        Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+
+//                Toast.makeText(getApplicationContext(), "sss", Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
 }
