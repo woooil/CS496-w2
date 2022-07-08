@@ -1,3 +1,4 @@
 Server/model/db.js
 
 *.log
+npm-debug.log.*

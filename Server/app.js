@@ -1,4 +1,3 @@
-let uuid = require('uuid');
 let express = require('express');
 let path = require('path');
 let favicon = require('static-favicon');
@@ -37,9 +36,10 @@ app.get('/api', function (req, res) {
 });
 
 
-app.use('/', routes);
+
 app.use('/auth', authrouter)
 app.use('/users', users);
+app.use('/', routes);
 
 /// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {
