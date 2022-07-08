@@ -2,6 +2,7 @@ package com.example.app_server;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -9,6 +10,15 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONException;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -27,6 +37,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        
+        if (SharedPrefManager.getInstance(this).isLoggedIn()) {
+            finish();
+            startActivity(new Intent(this, ListActivity.class));
+            return;
+        }
 
         signUpTV = findViewById(R.id.signUpTV);
         userIdET = findViewById(R.id.idET);
@@ -64,10 +80,32 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<Object> call, Response<Object> response) {
 
-                            Toast.makeText(getApplicationContext(), response.body().toString(), Toast.LENGTH_LONG).show();
+                            String result = response.body().toString();
 
-
-
+                            if (result.contains("id")) {
+                                Log.d(null, "Log in succeed: " + result);
+                                Toast.makeText(getApplicationContext(), "Log in succeed!", Toast.LENGTH_LONG).show();
+                                JSONParser parser = new JSONParser();
+                                try {
+                                    JSONObject obj = new JSONObject(result);
+                                    UsersModal user = new UsersModal(
+                                        obj.get("user_id").toString(),
+                                        obj.get("email").toString(),
+                                        obj.get("nickname").toString()
+                                    );
+                                    
+                                    SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
+                                   
+                                    finish();
+                                    startActivity(new Intent(getApplicationContext(), ListActivity.class));
+                                } catch (JSONException e) {
+                                    Log.e(null, "JSON error occurred: " + e);
+                                }
+                            }
+                            else {
+                                Log.d(null, "Log in failed: " + result);
+                                Toast.makeText(getApplicationContext(), "Log in failed!", Toast.LENGTH_LONG).show();
+                            }
                         }
 
                         @Override
