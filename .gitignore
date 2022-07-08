@@ -1,1 +1,3 @@
 Server/model/db.js
+
+*.log
