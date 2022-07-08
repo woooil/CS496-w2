@@ -23,44 +23,44 @@ public class SignupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
-        binding.addUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                        .connectTimeout(30, TimeUnit.MINUTES)
-                        .readTimeout(30, TimeUnit.SECONDS)
-                        .writeTimeout(30, TimeUnit.SECONDS)
-                        .build();
-
-                Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl("https://2dc8-192-249-19-234.jp.ngrok.io")
-                        .client(okHttpClient)
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .build();
-
-                JsonPlaceHolderApi jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
-
-                Call<Object> call = jsonPlaceHolderApi.getPosts();
-
-                call.enqueue(new Callback<Object>() {
-                    @Override
-                    public void onResponse(Call<Object> call, Response<Object> response) {
-
-                        if (!response.isSuccessful()) {
-                            return;
-                        }
-
-                        Object posts = response.body();
-
-                    }
-
-                    @Override
-                    public void onFailure(Call<Object> call, Throwable t) {
-                        textViewResult.setText(t.getMessage());
-                    }
-                });
-            }
-        });
+//        binding.addUser.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                OkHttpClient okHttpClient = new OkHttpClient.Builder()
+//                        .connectTimeout(30, TimeUnit.MINUTES)
+//                        .readTimeout(30, TimeUnit.SECONDS)
+//                        .writeTimeout(30, TimeUnit.SECONDS)
+//                        .build();
+//
+//                Retrofit retrofit = new Retrofit.Builder()
+//                        .baseUrl("https://2dc8-192-249-19-234.jp.ngrok.io")
+//                        .client(okHttpClient)
+//                        .addConverterFactory(GsonConverterFactory.create())
+//                        .build();
+//
+//                JsonPlaceHolderApi jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
+//
+//                Call<Object> call = jsonPlaceHolderApi.getPosts();
+//
+//                call.enqueue(new Callback<Object>() {
+//                    @Override
+//                    public void onResponse(Call<Object> call, Response<Object> response) {
+//
+//                        if (!response.isSuccessful()) {
+//                            return;
+//                        }
+//
+//                        Object posts = response.body();
+//
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<Object> call, Throwable t) {
+//                        textViewResult.setText(t.getMessage());
+//                    }
+//                });
+//            }
+//        });
 
     }
 }

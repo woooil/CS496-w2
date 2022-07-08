@@ -1,5 +1,6 @@
 package com.example.app_server;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,13 +16,19 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
-    private TextView textViewResult;
+    private TextView signUpTV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Click event for sign up button
+        signUpTV = findViewById(R.id.signUpTV);
+        signUpTV.setOnClickListener(v -> {
+            Intent i = new Intent(this, SignupActivity.class);
+            this.startActivity(i);
+        });
     }
 }
 
