@@ -3,6 +3,7 @@ package com.example.app_server;
 import android.content.Intent;
 import android.database.Observable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -10,6 +11,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONException;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -28,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView signUpTV;
     private EditText userIdET, passwordET;
     private TextView submitTV;
-    private final String BASE_URL = "https://f1a0-192-249-19-234.jp.ngrok.io";
+    private final String BASE_URL = "https://83c3-192-249-19-234.jp.ngrok.io";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,10 +78,31 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<Object> call, Response<Object> response) {
 
-                            Toast.makeText(getApplicationContext(), response.body().toString(), Toast.LENGTH_LONG).show();
+                            String result = response.body().toString();
 
-
-
+                            if (result.contains("id")) {
+                                Log.d(null, "Log in succeed: " + result);
+                                Toast.makeText(getApplicationContext(), "Log in succeed!", Toast.LENGTH_LONG).show();
+                                JSONParser parser = new JSONParser();
+                                try {
+                                    JSONObject obj = new JSONObject(result);
+                                    UsersModal user = new UsersModal(
+                                        obj.get("user_id").toString(),
+                                        obj.get("email").toString(),
+                                        obj.get("nickname").toString()
+                                    );
+                                    
+                                    Intent i = new Intent(MainActivity.this, ListActivity.class);
+                                    i.putExtra("user", user);
+                                    MainActivity.this.startActivity(i);
+                                } catch (JSONException e) {
+                                    Log.e(null, "JSON error occurred: " + e);
+                                }
+                            }
+                            else {
+                                Log.d(null, "Log in failed: " + result);
+                                Toast.makeText(getApplicationContext(), "Log in failed!", Toast.LENGTH_LONG).show();
+                            }
                         }
 
                         @Override
