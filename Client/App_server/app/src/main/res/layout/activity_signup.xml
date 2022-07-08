@@ -7,71 +7,160 @@
         android:layout_height="match_parent"
         tools:context=".SignupActivity">
 
-    <LinearLayout
+    <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:layout_gravity="center"
-    tools:ignore="MissingConstraints">
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintLeft_toLeftOf="parent"
+    >
 
         <TextView
+            android:id="@+id/title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="회원가입"
                 android:textSize="30dp"
                 android:textStyle="bold"
                 android:gravity="center"/>
+        <LinearLayout
+            android:id="@+id/idLL"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/title"
+            android:gravity="center"
+            >
+            <TextView
+                android:id="@+id/idTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ID: "
+                />
+            <EditText
+                android:id="@+id/user_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:layout_gravity="center"
+                android:gravity="center"
+                />
 
-        <EditText
-            android:id="@+id/user_id"
-            android:layout_width="wrap_content"
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/idCheck"
+                android:layout_marginLeft = "10dp"
+                android:text="중복 확인"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/pwd1LL"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:layout_gravity="center"
+            android:layout_below="@id/idLL"
             android:gravity="center"
-            android:text="id" />
-        <EditText
-            android:id="@+id/pwd1"
-            android:layout_width="wrap_content"
+            >
+            <TextView
+                android:id="@+id/pwd1TV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Password: "
+                />
+            <EditText
+                android:id="@+id/pwd1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:inputType="password"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/pwd2LL"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:layout_gravity="center"
+            android:layout_below="@id/pwd1LL"
             android:gravity="center"
-            android:text="pwd" />
-        <EditText
-            android:id="@+id/pwd2"
-            android:layout_width="wrap_content"
+            >
+            <TextView
+                android:id="@+id/pwd2TV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Password Check: "
+                />
+            <EditText
+                android:id="@+id/pwd2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:inputType="password"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/emailLL"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:layout_gravity="center"
+            android:layout_below="@id/pwd2LL"
             android:gravity="center"
-            android:text="pwd check " />
-        <EditText
-            android:id="@+id/email"
-            android:layout_width="wrap_content"
+            >
+            <TextView
+                android:id="@+id/emailTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Email: "
+                />
+            <EditText
+                android:id="@+id/email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:layout_gravity="center"
+                android:gravity="center"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/nicknameLL"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:layout_gravity="center"
+            android:layout_below="@id/emailLL"
             android:gravity="center"
-            android:text="email" />
-        <EditText
-            android:id="@+id/nickname"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="nickname" />
+            >
+            <TextView
+                android:id="@+id/nicknameTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nickname: "
+                />
+            <EditText
+                android:id="@+id/nickname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:layout_gravity="center"
+                android:gravity="center"
+                />
+        </LinearLayout>
 
 
-    </LinearLayout>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/add_user"
+            android:text="회원가입"
+            android:layout_below="@id/nicknameLL"
+            android:layout_centerHorizontal="true"/>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/add_user"
-        android:text="회원가입"
-        tools:ignore="MissingConstraints"></Button>
+    </RelativeLayout>
 
 <!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
 <!--        android:layout_width="wrap_content"-->
