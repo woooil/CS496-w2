@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://33ad-192-249-19-234.jp.ngrok.io")
+                .baseUrl("https://2dc8-192-249-19-234.jp.ngrok.io")
                 .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
