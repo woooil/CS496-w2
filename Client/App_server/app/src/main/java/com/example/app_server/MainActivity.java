@@ -14,7 +14,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import java.net.HttpURLConnection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
 public class MainActivity extends AppCompatActivity {
     private TextView signUpTV;
 
