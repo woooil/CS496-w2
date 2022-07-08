@@ -2,3 +2,5 @@ Server/model/db.js
 
 *.log
 npm-debug.log.*
+
+Server/node_modules/
