@@ -25,7 +25,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.get('/api', function (req, res) {
-    db.query("select * from test",(err, result )=>{
+    db.query("select * from users",(err, result )=>{
 
         console.log("api 테스트 성공");
         console.log(result);

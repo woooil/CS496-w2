@@ -1,4 +1,5 @@
 var mysql = require('mysql');
+const { VARCHAR } = require('mysql/lib/protocol/constants/types');
 var db = mysql.createConnection({
     host: "[]",
     user: '[]',
@@ -12,3 +13,4 @@ var db = mysql.createConnection({
 });
 db.connect();
 module.exports = db;
+
