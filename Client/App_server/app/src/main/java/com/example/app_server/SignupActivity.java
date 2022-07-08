@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 public class SignupActivity extends AppCompatActivity {
 
     private Button adduser;
+    private final String BASE_URL = "https://f1a0-192-249-19-234.jp.ngrok.io";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +45,7 @@ public class SignupActivity extends AppCompatActivity {
                         .build();
 
                 Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl("https://1226-192-249-19-234.jp.ngrok.io")
+                        .baseUrl(BASE_URL)
                         .client(okHttpClient)
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
