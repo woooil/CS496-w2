@@ -44,7 +44,7 @@ public class SignupActivity extends AppCompatActivity {
                         .build();
 
                 Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl("https://2dc8-192-249-19-234.jp.ngrok.io")
+                        .baseUrl("https://1226-192-249-19-234.jp.ngrok.io")
                         .client(okHttpClient)
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
