@@ -23,7 +23,7 @@ import io.socket.emitter.Emitter;
 
 public class ListActivity extends AppCompatActivity {
   private TextView nicknameTV;
-  private Button room1BT, room2BT;
+  private Button room1BT, room2BT, logoutBT;
   private UsersModal user;
 
   @Override
@@ -34,6 +34,7 @@ public class ListActivity extends AppCompatActivity {
     nicknameTV = findViewById(R.id.nicknameTV);
     room1BT = findViewById(R.id.room1BT);
     room2BT = findViewById(R.id.room2BT);
+    logoutBT = findViewById(R.id.logoutBT);
 
     user = SharedPrefManager.getInstance(this).getUser();
     nicknameTV.setText(user.getNickname());
@@ -52,6 +53,9 @@ public class ListActivity extends AppCompatActivity {
         i.putExtra("Room", "ROOM2");
         startActivity(i);
       }
+    });
+    logoutBT.setOnClickListener(v -> {
+      SharedPrefManager.getInstance(this).logout();
     });
   }
 }
