@@ -50,5 +50,7 @@ dependencies {
         // excluding org.json which is provided by Android
         exclude group: 'org.json', module: 'json'
     }
+    implementation 'petrov.kristiyan:colorpicker-library:1.1.10'
+    implementation 'com.byox.drawview:drawview:1.3.1'
 
 }

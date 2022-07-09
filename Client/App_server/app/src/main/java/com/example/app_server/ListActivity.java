@@ -23,11 +23,8 @@ import io.socket.emitter.Emitter;
 
 public class ListActivity extends AppCompatActivity {
   private TextView nicknameTV;
-  private Button room1BT;
+  private Button room1BT, room2BT, logoutBT;
   private UsersModal user;
-
-  private final String BASE_URL = "http://192.249.18.196";
-  
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -36,18 +33,29 @@ public class ListActivity extends AppCompatActivity {
     
     nicknameTV = findViewById(R.id.nicknameTV);
     room1BT = findViewById(R.id.room1BT);
-
+    room2BT = findViewById(R.id.room2BT);
+    logoutBT = findViewById(R.id.logoutBT);
 
     user = SharedPrefManager.getInstance(this).getUser();
     nicknameTV.setText(user.getNickname());
     room1BT.setOnClickListener(new View.OnClickListener() {
-
       @Override
       public void onClick(View view) {
         Intent i = new Intent(ListActivity.this, RoomActivity.class);
         i.putExtra("Room", "ROOM1");
         startActivity(i);
       }
+    });
+    room2BT.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        Intent i = new Intent(ListActivity.this, RoomActivity.class);
+        i.putExtra("Room", "ROOM2");
+        startActivity(i);
+      }
+    });
+    logoutBT.setOnClickListener(v -> {
+      SharedPrefManager.getInstance(this).logout();
     });
   }
 }
