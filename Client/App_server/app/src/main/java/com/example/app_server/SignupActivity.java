@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 public class SignupActivity extends AppCompatActivity {
 
     private Button adduser;
-    private final String BASE_URL = "https://83c3-192-249-19-234.jp.ngrok.io";
+    private final String BASE_URL = "http://192.249.18.204";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
