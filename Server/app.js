@@ -85,8 +85,10 @@ const io = socketio(server);
 const botName = "BOT";
 
 io.on('connection', socket => {
-    socket.on('joinRoom', ({ username, room }) => {
+    socket.on('joinRoom', (username) => {
+      const room = "ROOM0";
       const user = userJoin(socket.id, username, room);
+      console.log(user);
   
       socket.join(user.room);
   
@@ -97,10 +99,10 @@ io.on('connection', socket => {
       socket.broadcast.to(user.room).emit('message', formatMessage(botName, `${user.username} has joined the chat`));
       
       // Send users and room info
-      io.to(user.room).emit('roomUsers', {
-        room: user.room,
-        users: getRoomUsers(user.room)
-      });
+    //   io.to(user.room).emit('roomUsers', {
+    //     room: user.room,
+    //     users: getRoomUsers(user.room)
+    //   });
     });
   
     // Runs when client disconnects
@@ -110,17 +112,17 @@ io.on('connection', socket => {
         io.to(user.room).emit('message', formatMessage(botName, `${user.username} has left the chat`));
       
         // Send users and room info
-        io.to(user.room).emit('roomUsers', {
-          room: user.room,
-          users: getRoomUsers(user.room)
-        });
+        // io.to(user.room).emit('roomUsers', {
+        //   room: user.room,
+        //   users: getRoomUsers(user.room)
+        // });
       }
     });
     
     // Listen for chat message
     socket.on('chatMessage', (msg) => {
       const user = getCurrentUser(socket.id);
-      
+      console.log(msg);
       io.to(user.room).emit('message', formatMessage(user.username, msg));
     });
   });
