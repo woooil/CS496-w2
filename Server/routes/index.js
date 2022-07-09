@@ -1,5 +1,8 @@
+var socketio = require('socket.io');
 var express = require('express');
 var router = express.Router();
+
+var server = require('../app').server;
 
 /* GET home page. */
 router.get('/', function(req, res) {
