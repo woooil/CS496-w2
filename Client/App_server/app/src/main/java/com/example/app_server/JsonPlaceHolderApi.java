@@ -13,6 +13,12 @@ public interface JsonPlaceHolderApi {
     @GET("/api")
     Call<Object> getPosts();
 
+    @POST("/auth/check")
+    @FormUrlEncoded
+    Call < Object > check(@Field("user_id") String user_id);
+
+
+
     @POST("/auth/register")
     Call < Object > signup(@Body UserInfo info);
 
