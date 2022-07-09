@@ -10,12 +10,17 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.kakao.sdk.auth.model.OAuthToken;
+import com.kakao.sdk.user.UserApiClient;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.util.concurrent.TimeUnit;
 
+import kotlin.Unit;
+import kotlin.jvm.functions.Function2;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -26,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView signUpTV;
     private EditText userIdET, passwordET;
     private TextView submitTV;
+    private TextView kakaoTV;
     private final String BASE_URL = "http://192.249.18.196";
 
     @Override
@@ -43,11 +49,22 @@ public class MainActivity extends AppCompatActivity {
         userIdET = findViewById(R.id.idET);
         passwordET = findViewById(R.id.passwordET);
         submitTV = findViewById(R.id.submitTV);
+        kakaoTV = findViewById(R.id.kakaoTV);
 
         // Click event for sign up button
         signUpTV.setOnClickListener(v -> {
             Intent i = new Intent(this, SignupActivity.class);
             this.startActivity(i);
+        });
+
+
+        kakaoTV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (UserApiClient.getInstance().isKakaoTalkLoginAvailable(getApplicationContext()))
+                    UserApiClient.getInstance().loginWithKakaoTalk(getApplicationContext(), callback);
+                else UserApiClient.getInstance().loginWithKakaoAccount(getApplicationContext(), callback);
+            }
         });
 
         submitTV.setOnClickListener(new View.OnClickListener() {
@@ -110,6 +127,33 @@ public class MainActivity extends AppCompatActivity {
 
                     });
             }
+        });
+    }
+
+    Function2<OAuthToken, Throwable, Unit> callback = (oAuthToken, throwable) -> {
+        if (oAuthToken != null) {
+            Log.i("[카카오] 로그인", "성공");
+            updateKakaoLogin();
+        }
+        if (throwable != null) {
+            Log.i("[카카오] 로그인", "실패");
+            Log.e("signInKakao()", throwable.getLocalizedMessage());
+        } return null;
+    };
+
+    private void updateKakaoLogin() {
+        UserApiClient.getInstance().me((user, throwable) -> {
+            if (user != null) {
+                // @brief : 로그인 성공
+                Log.i("[카카오] 로그인 정보", user.toString());
+                // @brief : 로그인한 유저의 email주소와 token 값 가져오기. pw는 제공 X
+
+                Log.i("[카카오] 로그인 정보", user.getKakaoAccount().getEmail());
+            } else {
+                // @brief : 로그인 실패
+
+            }
+            return null;
         });
     }
 }
