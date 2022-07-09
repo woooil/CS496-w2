@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -16,6 +17,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 
 public class DrawView extends View {
   
@@ -88,6 +90,10 @@ public class DrawView extends View {
     this.socket = socket;
   }
   
+  public Canvas getmCanvas() {
+    return mCanvas;
+  }
+  
   public void undo() {
     // check whether the List is empty or not
     // if empty, the remove method will return an error
@@ -131,18 +137,32 @@ public class DrawView extends View {
   // firstly, we create a new Stroke
   // and add it to the paths list
   private void touchStart(float x, float y) {
+    drawStart(x, y);
+    
+    JSONObject data = new JSONObject();
+    try {
+      data.put("x", x);
+      data.put("y", y);
+    } catch (JSONException e) {
+      e.printStackTrace();
+    }
+    socket.emit("drawingStart", data);
+  }
+  
+  public void drawStart(float x, float y) {
+    Log.d(null, "DRAW started: " + x + ", " + y);
     mPath = new Path();
     Stroke fp = new Stroke(currentColor, strokeWidth, mPath);
     paths.add(fp);
-    
+  
     // finally remove any curve
     // or line from the path
     mPath.reset();
-    
+  
     // this methods sets the starting
     // point of the line being drawn
     mPath.moveTo(x, y);
-    
+  
     // we save the current
     // coordinates of the finger
     mX = x;
@@ -162,33 +182,26 @@ public class DrawView extends View {
     float dy = Math.abs(y - mY);
     
     if (dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE) {
-      mPath.quadTo(mX, mY, (x + mX) / 2, (y + mY) / 2);
-      JSONObject start = new JSONObject();
-      try {
-        start.put("x", mX);
-        start.put("y", mY);
-      } catch (JSONException e) {
-        e.printStackTrace();
-      }
-  
-      JSONObject end = new JSONObject();
-      try {
-        end.put("x", (x+mX)/2);
-        end.put("y", (y+mY)/2);
-      } catch (JSONException e) {
-        e.printStackTrace();
-      }
+      drawMove(x, y);
       
       JSONObject data = new JSONObject();
       try {
-        data.put("start", start);
-        data.put("end", end);
-        data.put("lineColor", currentColor);
-        data.put("lineSize", strokeWidth);
+        data.put("x", x);
+        data.put("y", y);
       } catch (JSONException e) {
         e.printStackTrace();
       }
       socket.emit("drawing", data);
+    }
+  }
+  
+  public void drawMove(float x, float y) {
+    Log.d(null, "DRAW moving: " + x + ", " + y);
+    float dx = Math.abs(x - mX);
+    float dy = Math.abs(y - mY);
+  
+    if (dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE) {
+      mPath.quadTo(mX, mY, (x + mX) / 2, (y + mY) / 2);
       
       mX = x;
       mY = y;
@@ -227,4 +240,5 @@ public class DrawView extends View {
     }
     return true;
   }
+  
 }

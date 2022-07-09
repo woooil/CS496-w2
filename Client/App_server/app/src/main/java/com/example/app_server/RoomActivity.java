@@ -102,11 +102,36 @@ public class RoomActivity extends AppCompatActivity {
         outputMessage(args[0].toString());
       }
     });
-    
-    socket.on("drawing_copy", new Emitter.Listener() {
+  
+    socket.on("drawing", new Emitter.Listener() {
       @Override
       public void call(Object... args) {
-        Log.d(null, "RECEIVED WELL! \n" + args[0]);
+//        paint.drawMove(args);
+        JSONObject data = (JSONObject) args[0];
+        try {
+          Double x = (Double) data.get("x");
+          Double y = (Double) data.get("y");
+          paint.drawMove(x.floatValue(), y.floatValue());
+          paint.invalidate();
+        } catch (JSONException e) {
+          e.printStackTrace();
+        }
+      }
+    });
+    
+    socket.on("drawingStart", new Emitter.Listener() {
+      @Override
+      public void call(Object... args) {
+        JSONObject data = (JSONObject) args[0];
+        try {
+          Double x = (Double) data.get("x");
+          Double y = (Double) data.get("y");
+//          paint.draw(paint.getmCanvas());
+          paint.drawStart(x.floatValue(), y.floatValue());
+          paint.invalidate();
+        } catch (JSONException e) {
+          e.printStackTrace();
+        }
       }
     });
     
@@ -190,6 +215,7 @@ public class RoomActivity extends AppCompatActivity {
       }
     });
   }
+  
 
 //  private void outputRoomName(String room) {
 //    Toast.makeText(getApplicationContext(), "You are currently in room " + room, Toast.LENGTH_SHORT).show();
