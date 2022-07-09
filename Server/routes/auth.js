@@ -80,7 +80,6 @@ router.post('/login', (req, res, next) => {
                         nickname: result[0].nickname
                     }
                     res.json(json);
-                    console.log(result[0]);
                 }
                 else
                     res.end(JSON.stringify('Wrong password!'));
