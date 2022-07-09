@@ -11,6 +11,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -23,7 +26,7 @@ public class ListActivity extends AppCompatActivity {
   private EditText msgET;
   private Button logoutBT, msgBT;
   private UsersModal user;
-  private final String BASE_URL = "http://192.249.18.204";
+  private final String BASE_URL = "http://192.249.18.196";
   
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +61,14 @@ public class ListActivity extends AppCompatActivity {
     Object temp = new String[]{
         username, room
     };
-    socket.emit("joinRoom", username);
+    JSONObject new_user = new JSONObject();
+    try {
+      new_user.put("username", username);
+      new_user.put("room", room);
+    } catch (JSONException e) {
+      e.printStackTrace();
+    }
+    socket.emit("joinRoom", new_user);
 //    socket.on("roomUsers", new Emitter.Listener() {
 //      @Override
 //      public void call(Object... args) {
