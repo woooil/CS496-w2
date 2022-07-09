@@ -19,7 +19,7 @@ import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 
 public class ListActivity extends AppCompatActivity {
-  private TextView nicknameTV;
+  private TextView nicknameTV, msgBox;
   private EditText msgET;
   private Button logoutBT, msgBT;
   private UsersModal user;
@@ -40,6 +40,7 @@ public class ListActivity extends AppCompatActivity {
     logoutBT = findViewById(R.id.logoutBT);
     msgBT = findViewById(R.id.msgBT);
     msgET = findViewById(R.id.msgET);
+    msgBox = findViewById(R.id.msgBox);
     
     nicknameTV.setText(user.getNickname() + "!");
     
@@ -83,8 +84,14 @@ public class ListActivity extends AppCompatActivity {
   }
   
   private void outputMessage(String message) {
-//    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     Log.d(null, message);
+    runOnUiThread(new Runnable() {
+      @Override
+      public void run() {
+        msgBox.setText(message);
+    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+      }
+    });
   }
   
 //  private void outputRoomName(String room) {
