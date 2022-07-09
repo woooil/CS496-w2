@@ -45,7 +45,6 @@ app.get('/api', function (req, res) {
 
 
 
-
 app.use('/', routes);
 app.use('/auth', authrouter)
 app.use('/users', users);
