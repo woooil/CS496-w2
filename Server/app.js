@@ -1,16 +1,25 @@
+var socketio = require('socket.io');
 let express = require('express');
 let path = require('path');
 let favicon = require('static-favicon');
 let logger = require('morgan');
 let cookieParser = require('cookie-parser');
 let bodyParser = require('body-parser');
+const http = require('http');
 
 let routes = require('./routes/index');
 let users = require('./routes/users');
 let authrouter = require('./routes/auth');
+let list = require('./routes/list');
 let db = require('./model/db');
+const { userJoin, getCurrentUser, userLeave, getRoomUsers } = require('./utils/users');
+const formatMessage = require('./utils/messages');
 
 let app = express();
+const server = app.listen(4000,() =>{
+    console.log("연결 성공");
+});;
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -22,7 +31,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
 
 app.get('/api', function (req, res) {
     db.query("select * from users",(err, result )=>{
@@ -37,9 +45,10 @@ app.get('/api', function (req, res) {
 
 
 
+app.use('/', routes);
 app.use('/auth', authrouter)
 app.use('/users', users);
-app.use('/', routes);
+app.use('/list', list);
 
 /// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {
@@ -71,10 +80,50 @@ if (app.get('env') === 'development') {
 //         error: {}
 //     });
 // });
+  
+const io = socketio(server);
+const botName = "BOT";
 
+io.on('connection', socket => {
+    socket.on('joinRoom', ({ username, room }) => {
+      const user = userJoin(socket.id, username, room);
+  
+      socket.join(user.room);
+  
+      // Welcome current user
+      socket.emit('message', formatMessage(botName, 'Welcome to ChatCord!'));
+      
+      // Broadcast when a user connects
+      socket.broadcast.to(user.room).emit('message', formatMessage(botName, `${user.username} has joined the chat`));
+      
+      // Send users and room info
+      io.to(user.room).emit('roomUsers', {
+        room: user.room,
+        users: getRoomUsers(user.room)
+      });
+    });
+  
+    // Runs when client disconnects
+    socket.on('disconnect', () => {
+      const user = userLeave(socket.id);
+      if (user) {
+        io.to(user.room).emit('message', formatMessage(botName, `${user.username} has left the chat`));
+      
+        // Send users and room info
+        io.to(user.room).emit('roomUsers', {
+          room: user.room,
+          users: getRoomUsers(user.room)
+        });
+      }
+    });
+    
+    // Listen for chat message
+    socket.on('chatMessage', (msg) => {
+      const user = getCurrentUser(socket.id);
+      
+      io.to(user.room).emit('message', formatMessage(user.username, msg));
+    });
+  });
 
-app.listen(4000,() =>{
-    console.log("연결 성공");
-});
-
-module.exports = app;
+exports.server = server;
+exports.app = app;
