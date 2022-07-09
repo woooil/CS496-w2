@@ -85,9 +85,11 @@ const io = socketio(server);
 const botName = "BOT";
 
 io.on('connection', socket => {
-    socket.on('joinRoom', (username) => {
-      const room = "ROOM0";
-      const user = userJoin(socket.id, username, room);
+    socket.on('joinRoom', (new_user) => {
+    console.log("username: ", new_user);
+
+     
+      const user = userJoin(socket.id, new_user.username, new_user.room);
       console.log(user);
   
       socket.join(user.room);
@@ -122,10 +124,28 @@ io.on('connection', socket => {
     // Listen for chat message
     socket.on('chatMessage', (msg) => {
       const user = getCurrentUser(socket.id);
-      console.log(msg);
+      console.log("user: " , user,  "msg is : ", msg);
       io.to(user.room).emit('message', formatMessage(user.username, msg));
     });
+
+
+    socket.on('drawing', (data) => {
+        const user = getCurrentUser(socket.id);
+        console.log("드로잉포인트 1 : ", data.x, " ", data.y);
+        socket.broadcast.to(user.room).emit('drawing', data);
+
+    });
+
+
+    socket.on('drawingStart', (data) => {
+        const user = getCurrentUser(socket.id);
+        console.log("스타트포인트 2 : ", data.x, " ", data.y);
+        socket.broadcast.to(user.room).emit('drawingStart', data);
+
+    });
+
+
+    
   });
 
-exports.server = server;
 exports.app = app;
