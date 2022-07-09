@@ -21,8 +21,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class SignupActivity extends AppCompatActivity {
 
     private Button adduser;
+    private final String BASE_URL = "http://192.249.18.204";
     private Button idcheck;
-    private final String BASE_URL = "http://192.249.18.196";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
