@@ -53,19 +53,19 @@ public class ListActivity extends AppCompatActivity {
     socket.emit("hello", user.getNickname());
     Log.d(null, "socket emitted!");
     
-    String username = user.getNickname();
+    String username = user.getNickname().toString();
     String room = "ROOM0";
     Object temp = new String[]{
         username, room
     };
-    socket.emit("joinRoom", temp);
-    socket.on("roomUsers", new Emitter.Listener() {
-      @Override
-      public void call(Object... args) {
-        outputRoomName(args[0].toString());
-        outputUsers(args[1].toString());
-      }
-    });
+    socket.emit("joinRoom", username);
+//    socket.on("roomUsers", new Emitter.Listener() {
+//      @Override
+//      public void call(Object... args) {
+//        outputRoomName(args[0].toString());
+//        outputUsers(args[1].toString());
+//      }
+//    });
     socket.on("message", new Emitter.Listener() {
       @Override
       public void call(Object... args) {
@@ -83,14 +83,15 @@ public class ListActivity extends AppCompatActivity {
   }
   
   private void outputMessage(String message) {
-    Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+//    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+    Log.d(null, message);
   }
   
-  private void outputRoomName(String room) {
-    Toast.makeText(this, "You are currently in room " + room, Toast.LENGTH_SHORT).show();
-  }
+//  private void outputRoomName(String room) {
+//    Toast.makeText(getApplicationContext(), "You are currently in room " + room, Toast.LENGTH_SHORT).show();
+//  }
   
-  private void outputUsers(String users) {
-    Toast.makeText(this, "Current users: " + users, Toast.LENGTH_SHORT).show();
-  }
+//  private void outputUsers(String users) {
+//    Toast.makeText(getApplicationContext(), "Current users: " + users, Toast.LENGTH_SHORT).show();
+//  }
 }
