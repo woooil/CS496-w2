@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView signUpTV;
     private EditText userIdET, passwordET;
     private TextView submitTV;
-    private final String BASE_URL = "http://192.249.18.196";
+    private final String BASE_URL = "http://192.249.18.204";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

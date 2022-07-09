@@ -22,11 +22,11 @@ import io.socket.emitter.Emitter;
 
 public class RoomActivity extends AppCompatActivity {
   
-  private TextView nicknameTV, msgBox;
+  private TextView nicknameTV, msgBox, roomTV;
   private EditText msgET;
   private Button logoutBT, msgBT;
   private UsersModal user;
-  private final String BASE_URL = "http://192.249.18.196";
+  private final String BASE_URL = "http://192.249.18.204";
   private String room;
   
   @Override
@@ -48,8 +48,10 @@ public class RoomActivity extends AppCompatActivity {
     msgBT = findViewById(R.id.msgBT);
     msgET = findViewById(R.id.msgET);
     msgBox = findViewById(R.id.msgBox);
+    roomTV = findViewById(R.id.roomTV);
     
     nicknameTV.setText(user.getNickname() + "!");
+    roomTV.setText(room);
     
     logoutBT.setOnClickListener(v -> {
       SharedPrefManager.getInstance(this).logout();
