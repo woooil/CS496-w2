@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ListActivity">
+
+    <LinearLayout
+        android:id="@+id/nicknameLL"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:paddingTop="200dp"
+        android:gravity="center"
+        >
+        <TextView
+            android:id="@+id/nicknameTag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Welcome, "
+            />
+        <TextView
+            android:id="@+id/nicknameTV"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/roomListLL"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/nicknameLL"
+        android:orientation="vertical"
+        android:gravity="center">
+        <Button
+            android:id="@+id/room1BT"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:text="Room 1"
+            />
+        <Button
+            android:id="@+id/room2BT"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:text="Room 2"
+            />
+    </LinearLayout>
+    <Button
+        android:layout_height="40dp"
+        android:layout_width="100dp"
+        app:layout_constraintTop_toBottomOf="@id/roomListLL"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:id="@+id/logoutBT"
+        android:text="Logout"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
