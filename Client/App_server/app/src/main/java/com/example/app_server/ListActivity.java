@@ -23,33 +23,21 @@ import io.socket.emitter.Emitter;
 
 public class ListActivity extends AppCompatActivity {
   private TextView nicknameTV;
-  private EditText msgET;
-  private Button logoutBT, msgBT;
+  private Button room1BT;
   private UsersModal user;
+
   private final String BASE_URL = "http://192.249.18.196";
   
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_list);
     
-    if (!SharedPrefManager.getInstance(this).isLoggedIn()) {
-      finish();
-      startActivity(new Intent(this, MainActivity.class));
-    }
-    
-    user = SharedPrefManager.getInstance(this).getUser();
     nicknameTV = findViewById(R.id.nicknameTV);
-    logoutBT = findViewById(R.id.logoutBT);
-    msgBT = findViewById(R.id.msgBT);
-    msgET = findViewById(R.id.msgET);
-    
-    nicknameTV.setText(user.getNickname() + "!");
-    
-    logoutBT.setOnClickListener(v -> {
-      SharedPrefManager.getInstance(this).logout();
-    });
+    room1BT = findViewById(R.id.room1BT);
   
+
     final Socket socket = IO.socket(URI.create(BASE_URL));
     socket.connect();
     Log.d(null, "socket created!");
@@ -84,24 +72,17 @@ public class ListActivity extends AppCompatActivity {
     });
     
     msgBT.setOnClickListener(new View.OnClickListener() {
+
+    user = SharedPrefManager.getInstance(this).getUser();
+    nicknameTV.setText(user.getNickname());
+    room1BT.setOnClickListener(new View.OnClickListener() {
+
       @Override
       public void onClick(View view) {
-        socket.emit("chatMessage", msgET.getText().toString());
-        msgET.setText("");
+        Intent i = new Intent(ListActivity.this, RoomActivity.class);
+        i.putExtra("Room", "ROOM1");
+        startActivity(i);
       }
     });
   }
-  
-  private void outputMessage(String message) {
-//    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-    Log.d(null, message);
-  }
-  
-//  private void outputRoomName(String room) {
-//    Toast.makeText(getApplicationContext(), "You are currently in room " + room, Toast.LENGTH_SHORT).show();
-//  }
-  
-//  private void outputUsers(String users) {
-//    Toast.makeText(getApplicationContext(), "Current users: " + users, Toast.LENGTH_SHORT).show();
-//  }
 }
