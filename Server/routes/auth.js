@@ -60,7 +60,6 @@ router.post('/register', function (req, res) {
 
 //sign in
 router.post('/login', (req, res, next) => {
-    console.log("sssss");
     var post_data = req.body;
     var user_id = post_data.user_id;
     var user_password = post_data.password;

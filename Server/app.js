@@ -14,6 +14,7 @@ let list = require('./routes/list');
 let db = require('./model/db');
 const { userJoin, getCurrentUser, userLeave, getRoomUsers } = require('./utils/users');
 const formatMessage = require('./utils/messages');
+const Room = require('./utils/room');
 
 let app = express();
 const server = app.listen(4000,() =>{
@@ -84,21 +85,24 @@ if (app.get('env') === 'development') {
 const io = socketio(server);
 const botName = "BOT";
 
+
+
 io.on('connection', socket => {
     socket.on('joinRoom', (new_user) => {
     console.log("username: ", new_user);
 
+    
      
-      const user = userJoin(socket.id, new_user.username, new_user.room);
-      console.log(user);
-  
-      socket.join(user.room);
-  
-      // Welcome current user
-      socket.emit('message', formatMessage(botName, 'Welcome to ChatCord!'));
-      
-      // Broadcast when a user connects
-      socket.broadcast.to(user.room).emit('message', formatMessage(botName, `${user.username} has joined the chat`));
+    const user = userJoin(socket.id, new_user.username, new_user.room);
+    console.log(user);
+
+    socket.join(user.room);
+
+    // Welcome current user
+    socket.emit('message', formatMessage(botName, 'Welcome to ChatCord!'));
+    
+    // Broadcast when a user connects
+    socket.broadcast.to(user.room).emit('message', formatMessage(botName, `${user.username} has joined the chat`));
       
       // Send users and room info
     //   io.to(user.room).emit('roomUsers', {
