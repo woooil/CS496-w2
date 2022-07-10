@@ -16,12 +16,14 @@ const { userJoin, getCurrentUser, userLeave, getRoomUsers } = require('./utils/u
 const formatMessage = require('./utils/messages');
 const { Room, Roomcreate, getRoom, UserJoinRoom, printallroom, InspectArtist, DeleteRoom } = require('./utils/room');
 const { exit } = require('process');
+const internal = require('stream');
 
 let app = express();
 const server = app.listen(4000,() =>{
     console.log("연결 성공");
 });;
 
+let answer;
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -178,12 +180,20 @@ io.on('connection', socket => {
       const user = getCurrentUser(socket.id);
       console.log("user: " , user,  "msg is : ", msg);
       io.to(user.room).emit('message', formatMessage(user.username, msg));
+      if (msg == answer) { // 정답일 떼
+
+        io.to(user.room).emit('correct', user.username);
+        const gameroom = getRoom(user.room);
+        gameroom.artist = user.username;
+        console.log("새로운 아티스트 : ", gameroom.artist);
+        
+      }
     });
 
 
     socket.on('drawing', (data) => {
         const user = getCurrentUser(socket.id);
-        console.log("드로잉포인트 1 : ", data.x, " ", data.y);
+        // console.log("드로잉포인트 1 : ", data.x, " ", data.y);
         socket.broadcast.to(user.room).emit('drawing', data);
 
     });
@@ -191,7 +201,7 @@ io.on('connection', socket => {
 
     socket.on('drawingStart', (data) => {
         const user = getCurrentUser(socket.id);
-        console.log("스타트포인트 2 : ", data.x, " ", data.y);
+        // console.log("스타트포인트 2 : ", data.x, " ", data.y);
         socket.broadcast.to(user.room).emit('drawingStart', data);
 
     });
@@ -200,20 +210,16 @@ io.on('connection', socket => {
     const user = getCurrentUser(socket.id);
     const room = getRoom(user.room);
     console.log("게임스타트 소켓 + room 네임: ", room, " user: ", user);
-    io.to(user.room).emit('gameStart', "게임이 시작 되었습니다.");
-    socket.broadcast.to(user.room).emit('guessStart', );
-
+    io.to(user.room).emit('gameStart');
+    socket.broadcast.to(user.room).emit('guessStart');
+    db.query("select * from words", (err, word) =>{
+      const rand = Math.floor(Math.random() * (word.length));
+      answer = word[rand].word;
+      console.log("랜덤 단어: ", answer);
+      socket.emit("drawStart", answer);
+    })
+   
   });
-
-  socket.on('checkcorrect', () => {
-    // const user = getCurrentUser(socket.id);
-    // const room = getRoom(user.room);
-    // console.log("게임스타트 소켓 + room 네임: ", room, " user: ", user);
-    // io.to(user.room).emit('gameStart', "게임이 시작 되었습니다.");
-    // socket.broadcast.to(user.room).emit('guessStart',);
-
-  });
-
 
 
 
