@@ -7,159 +7,252 @@
     tools:context=".RoomActivity">
 
     <LinearLayout
-        android:id="@+id/nicknameLL"
+        android:id="@+id/roomLL"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:paddingTop="10dp"
-        android:gravity="center"
-        >
-        <TextView
-            android:id="@+id/nicknameTag"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Nickname: "
-            />
-        <TextView
-            android:id="@+id/nicknameTV"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/roomLL"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/nicknameLL"
-        android:gravity="center"
+        android:background="@color/color7"
         >
         <TextView
             android:id="@+id/roomTag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="You are in a room "
+            android:layout_marginLeft="20dp"
+            android:text="Room: "
+            android:textStyle="bold"
+            android:textSize="30dp"
             />
         <TextView
             android:id="@+id/roomTV"
-            android:layout_width="200dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="ROOM"
+            android:textStyle="bold"
+            android:textSize="30dp"
             />
     </LinearLayout>
-    <LinearLayout
-        android:id="@+id/msgLL"
+
+    <Button
+        android:id="@+id/startBT"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:text="Start"
+        app:layout_constraintTop_toTopOf="@id/roomLL"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginRight="10dp"
+        android:visibility="invisible"
+        />
+
+    <com.example.app_server.DrawView
+        android:id="@+id/draw_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/roomLL"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/roomLL"
-        android:gravity="center"
+        app:layout_constraintBottom_toTopOf="@id/bottomBar"
+        android:layout_centerInParent="true" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/palyersCL"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="@id/draw_view"
+        app:layout_constraintLeft_toLeftOf="@id/draw_view"
+        app:layout_constraintRight_toRightOf="@id/draw_view"
+        app:layout_constraintBottom_toBottomOf="@id/draw_view"
         >
-        <EditText
-            android:id="@+id/msgET"
-            android:layout_width="200dp"
+
+        <LinearLayout
+            android:id="@+id/p1LL"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            />
-        <Button
-            android:id="@+id/msgBT"
-            android:layout_width="80dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            >
+            <TextView
+                android:id="@+id/p1Icon"
+                android:layout_width="70dp"
+                android:layout_height="20dp"
+                android:text="Player 1"
+                />
+            <TextView
+                android:id="@+id/p1Chat"
+                android:layout_width="100dp"
+                android:layout_height="20dp"
+                android:text="Chat"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/p2LL"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Send"
-            />
-    </LinearLayout>
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/p1LL"
+            android:visibility="invisible"
+            >
+            <TextView
+                android:id="@+id/p2Icon"
+                android:layout_width="70dp"
+                android:layout_height="20dp"
+                android:text="Player 2"
+                />
+            <TextView
+                android:id="@+id/p2Chat"
+                android:layout_width="100dp"
+                android:layout_height="20dp"
+                android:text="Chat"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/p3LL"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="invisible"
+            >
+            <TextView
+                android:id="@+id/p3Chat"
+                android:layout_width="100dp"
+                android:layout_height="20dp"
+                android:text="Chat"
+                android:gravity="right"
+                />
+            <TextView
+                android:id="@+id/p3Icon"
+                android:layout_width="70dp"
+                android:layout_height="20dp"
+                android:text="Player 3"
+                android:gravity="right"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/p4LL"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/p3LL"
+            android:visibility="invisible"
+            >
+            <TextView
+                android:id="@+id/p4Chat"
+                android:layout_width="100dp"
+                android:layout_height="20dp"
+                android:text="Chat"
+                android:gravity="right"
+                />
+            <TextView
+                android:id="@+id/p4Icon"
+                android:layout_width="70dp"
+                android:layout_height="20dp"
+                android:text="Player 4"
+                android:gravity="right"
+                />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <TextView
         android:id="@+id/msgBox"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/msgLL"
+        app:layout_constraintBottom_toTopOf="@id/bottomBar"
         android:text="Start to chat!"
         />
 
     <LinearLayout
-        android:id="@+id/linear"
+        android:id="@+id/bottomBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/msgBox"
-        android:orientation="vertical">
+        app:layout_constraintRight_toRightOf="parent"
+        android:orientation="vertical"
+        >
 
         <LinearLayout
+            android:id="@+id/msgLL"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <ImageButton
-                android:id="@+id/btn_undo"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:src="@color/color1"
-                android:text="Undo" />
-
-            <ImageButton
-                android:id="@+id/btn_save"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:src="@color/color2"
-                android:text="Save" />
-
-            <ImageButton
-                android:id="@+id/btn_color"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:src="@color/color3"
-                android:text="Color" />
-
-
-            <ImageButton
-                android:id="@+id/btn_stroke"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:src="@color/color4"
-                android:text="Stroke" />
+            android:gravity="center"
+            >
+            <EditText
+                android:id="@+id/msgET"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                />
+            <Button
+                android:id="@+id/msgBT"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:text="Send"
+                />
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/drawingOptionLL"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.google.android.material.slider.RangeSlider
-                android:id="@+id/rangebar"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone" />
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/btn_undo"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:src="@color/color1"
+                    android:text="Undo" />
+
+                <ImageButton
+                    android:id="@+id/btn_save"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:src="@color/color2"
+                    android:text="Save" />
+
+                <ImageButton
+                    android:id="@+id/btn_color"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:src="@color/color3"
+                    android:text="Color" />
+
+
+                <ImageButton
+                    android:id="@+id/btn_stroke"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:src="@color/color4"
+                    android:text="Stroke" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.google.android.material.slider.RangeSlider
+                    android:id="@+id/rangebar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone" />
+
+            </LinearLayout>
 
         </LinearLayout>
-
     </LinearLayout>
-
-    <com.example.app_server.DrawView
-        android:id="@+id/draw_view"
-        android:layout_width="match_parent"
-        android:layout_height="500dp"
-        android:layout_below="@id/linear"
-        app:layout_constraintTop_toBottomOf="@id/linear"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_centerInParent="true" />
-
-    <Button
-        android:layout_height="40dp"
-        android:layout_width="100dp"
-        app:layout_constraintTop_toBottomOf="@id/draw_view"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:id="@+id/logoutBT"
-        android:text="Logout"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
