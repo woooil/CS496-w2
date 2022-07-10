@@ -25,6 +25,7 @@ public class DrawView extends View {
   private float mX, mY;
   private Path mPath;
   private Socket socket;
+  private Boolean isAllowedToDraw = false;
   
   // the Paint class encapsulates the color
   // and style information about
@@ -89,6 +90,8 @@ public class DrawView extends View {
   public void setSocket(Socket socket) {
     this.socket = socket;
   }
+  
+  public void setIsAllowedToDraw(Boolean b) { isAllowedToDraw = b; }
   
   public Canvas getmCanvas() {
     return mCanvas;
@@ -208,6 +211,11 @@ public class DrawView extends View {
     }
   }
   
+  public void clear() {
+    paths.clear();
+    invalidate();
+  }
+  
   // at the end, we call the lineTo method
   // which simply draws the line until
   // the end position
@@ -221,6 +229,8 @@ public class DrawView extends View {
   // to that we call our desired methods
   @Override
   public boolean onTouchEvent(MotionEvent event) {
+    if (!isAllowedToDraw) return true;
+    
     float x = event.getX();
     float y = event.getY();
     
@@ -240,5 +250,4 @@ public class DrawView extends View {
     }
     return true;
   }
-  
 }

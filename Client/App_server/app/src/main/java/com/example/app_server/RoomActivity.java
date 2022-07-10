@@ -8,8 +8,10 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -35,7 +37,7 @@ import petrov.kristiyan.colorpicker.ColorPicker;
 
 public class RoomActivity extends AppCompatActivity {
   
-  private TextView msgBox, roomTV;
+  private TextView msgBox, roomTV, wordTV;
   private LinearLayout[] plLL = new LinearLayout[4];
   private TextView[] plIcon = new TextView[4];
   private TextView[] plChat = new TextView[4];
@@ -48,6 +50,8 @@ public class RoomActivity extends AppCompatActivity {
   private ImageButton save, color, stroke, undo;
   private RangeSlider rangeSlider;
   private Socket socket;
+  private Boolean isArtist = false;
+  private LinearLayout drawingOptionLL, msgLL;
   
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +78,9 @@ public class RoomActivity extends AppCompatActivity {
     color = (ImageButton) findViewById(R.id.btn_color);
     stroke = (ImageButton) findViewById(R.id.btn_stroke);
     startBT = findViewById(R.id.startBT);
+    drawingOptionLL = findViewById(R.id.drawingOptionLL);
+    msgLL = findViewById(R.id.msgLL);
+    wordTV = findViewById(R.id.wordTV);
     
     plLL[0] = findViewById(R.id.p1LL);
     plLL[1] = findViewById(R.id.p2LL);
@@ -175,11 +182,52 @@ public class RoomActivity extends AppCompatActivity {
       }
     });
     
+    socket.on("drawStart", new Emitter.Listener() {
+      @Override
+      public void call(Object... args) {
+        String word = (String) args[0];
+        drawStart(word);
+      }
+    });
+    
+    socket.on("guessStart", new Emitter.Listener() {
+      @Override
+      public void call(Object... args) {
+        guessStart();
+      }
+    });
+    
+    socket.on("correct", new Emitter.Listener() {
+      @Override
+      public void call(Object... args) {
+        runOnUiThread(new Runnable() {
+          @Override
+          public void run() {
+            String winner = args[0].toString();
+            Toast.makeText(RoomActivity.this, winner + "님이 정답을 맞췄습니다!", Toast.LENGTH_SHORT).show();
+            updateDrawState(false);
+            if (user.getNickname().equals(winner))
+              startBT.setVisibility(View.VISIBLE);
+          }
+        });
+      }
+    });
+    
+    msgET.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+      @Override
+      public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+        if (i == EditorInfo.IME_ACTION_DONE) {
+          sendChat();
+          return true;
+        }
+        return false;
+      }
+    });
+    
     msgBT.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
-        socket.emit("chatMessage", msgET.getText().toString());
-        msgET.setText("");
+        sendChat();
       }
     });
     
@@ -188,6 +236,26 @@ public class RoomActivity extends AppCompatActivity {
       public void onClick(View view) {
         socket.emit("gameStart");
         startBT.setVisibility(View.INVISIBLE);
+      }
+    });
+    
+    socket.on("gameStart", new Emitter.Listener() {
+      @Override
+      public void call(Object... args) {
+        runOnUiThread(new Runnable() {
+          @Override
+          public void run() {
+            Toast.makeText(RoomActivity.this, "게임이 시작되었습니다!", Toast.LENGTH_SHORT).show();
+            paint.clear();
+          }
+        });
+      }
+    });
+  
+    undo.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        paint.undo();
       }
     });
   
@@ -259,7 +327,6 @@ public class RoomActivity extends AppCompatActivity {
       @Override
       public void run() {
         msgBox.setText(message);
-        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
       }
     });
   }
@@ -290,15 +357,60 @@ public class RoomActivity extends AppCompatActivity {
         }
   
         if (user.getNickname().equals(artist)) {
+          isArtist = true;
           startBT.setVisibility(View.VISIBLE);
         } else {
+          isArtist = false;
           startBT.setVisibility(View.INVISIBLE);
         }
       }
     });
-  
   }
   
+  private void drawStart(String word) {
+    runOnUiThread(new Runnable() {
+      @Override
+      public void run() {
+        startBT.setVisibility(View.INVISIBLE);
+        wordTV.setText(word);;
+        updateDrawState(true);
+      }
+    });
+  }
+  
+  private void guessStart() {
+    runOnUiThread(new Runnable() {
+      @Override
+      public void run() {
+        updateDrawState(false);
+      }
+    });
+  }
+  
+  private void updateDrawState(Boolean draw) {
+    if (draw) {
+      paint.setIsAllowedToDraw(true);
+      drawingOptionLL.setVisibility(View.VISIBLE);
+      msgLL.setVisibility(View.INVISIBLE);
+      wordTV.setVisibility(View.VISIBLE);
+    } else {
+      paint.setIsAllowedToDraw(false);
+      drawingOptionLL.setVisibility(View.INVISIBLE);
+      msgLL.setVisibility(View.VISIBLE);
+      wordTV.setVisibility(View.INVISIBLE);
+    }
+  }
+  
+  private void sendChat() {
+    runOnUiThread(new Runnable() {
+      @Override
+      public void run() {
+        socket.emit("chatMessage", msgET.getText().toString());
+        msgET.setText("");
+        msgET.clearFocus();
+      }
+    });
+  }
 
 //  private void outputRoomName(String room) {
 //    Toast.makeText(getApplicationContext(), "You are currently in room " + room, Toast.LENGTH_SHORT).show();
