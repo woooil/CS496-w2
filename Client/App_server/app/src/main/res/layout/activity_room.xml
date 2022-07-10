@@ -45,6 +45,18 @@
         android:visibility="invisible"
         />
 
+    <TextView
+        android:id="@+id/wordTV"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:text="Word"
+        android:gravity="right"
+        app:layout_constraintTop_toTopOf="@id/roomLL"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginRight="10dp"
+        android:visibility="invisible"
+        />
+
     <com.example.app_server.DrawView
         android:id="@+id/draw_view"
         android:layout_width="match_parent"
@@ -165,7 +177,7 @@
         android:text="Start to chat!"
         />
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bottomBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -180,11 +192,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             >
             <EditText
                 android:id="@+id/msgET"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
+                android:imeOptions="actionDone"
+                android:singleLine="true"
                 />
             <Button
                 android:id="@+id/msgBT"
@@ -198,7 +215,11 @@
             android:id="@+id/drawingOptionLL"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="invisible"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -253,6 +274,6 @@
             </LinearLayout>
 
         </LinearLayout>
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
