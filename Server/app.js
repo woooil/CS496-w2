@@ -14,7 +14,8 @@ let list = require('./routes/list');
 let db = require('./model/db');
 const { userJoin, getCurrentUser, userLeave, getRoomUsers } = require('./utils/users');
 const formatMessage = require('./utils/messages');
-const Room = require('./utils/room');
+const { Room, Roomcreate, getRoom, UserJoinRoom, printallroom, InspectArtist, DeleteRoom } = require('./utils/room');
+const { exit } = require('process');
 
 let app = express();
 const server = app.listen(4000,() =>{
@@ -90,13 +91,38 @@ const botName = "BOT";
 io.on('connection', socket => {
     socket.on('joinRoom', (new_user) => {
     console.log("username: ", new_user);
+  
+    const alreadyexist_room = getRoom(new_user.room);
+    console.log("alreadyexist_room : ", alreadyexist_room)
 
+      if (alreadyexist_room == undefined){  // 룸이 없을 때 새로운 룸을 만들고 한명 들어감
+      Roomcreate(new Room(new_user.room, new_user.username));
+      UserJoinRoom(new_user.username, getRoom(new_user.room));
+    }
+    else{ // 룸이 이미 있을 때 그 룸에 들어감
+        UserJoinRoom(new_user.username, alreadyexist_room)
+    }
+  
     
+
+    printallroom();
      
     const user = userJoin(socket.id, new_user.username, new_user.room);
+
+    const cur_user = getCurrentUser(socket.id);
+    const cur_room = getRoom(cur_user.room);
+    let room_info = {
+      all_player: cur_room.all_player,
+      artist: cur_room.artist
+    }
+
+    
+
     console.log(user);
 
     socket.join(user.room);
+
+    io.to(user.room).emit("information", room_info);
 
     // Welcome current user
     socket.emit('message', formatMessage(botName, 'Welcome to ChatCord!'));
@@ -113,16 +139,38 @@ io.on('connection', socket => {
   
     // Runs when client disconnects
     socket.on('disconnect', () => {
-      const user = userLeave(socket.id);
-      if (user) {
-        io.to(user.room).emit('message', formatMessage(botName, `${user.username} has left the chat`));
+      console.log("나가기");
+      const exit_user = getCurrentUser(socket.id);
+      const exit_room = getRoom(exit_user.room);
       
-        // Send users and room info
-        // io.to(user.room).emit('roomUsers', {
-        //   room: user.room,
-        //   users: getRoomUsers(user.room)
-        // });
+      //나가는 사람이 artist일 때
+      if(InspectArtist(exit_user.room, exit_user.username) == true){
+        exit_room.userleave(exit_user);
+        exit_room.setartist(); // all_player의 0번 째 index 사람을 artist로 설정 
       }
+      else exit_room.userleave(exit_user);
+      
+      
+    
+      const user = userLeave(socket.id);
+      console.log("exit_user : ", exit_user, " | exit_room: ", exit_room );
+
+
+      let room_info = {
+        all_player: exit_room.all_player,
+        artist: exit_room.artist
+      }
+      socket.broadcast.to(exit_room.name).emit("information", room_info);
+
+      if (exit_room.checkemptyplayer() == true){ //아무도 없을 때
+        DeleteRoom(exit_room.name);
+      }
+      else{
+        if (user) {
+          io.to(user.room).emit('message', formatMessage(botName, `${user.username} has left the chat`));
+        } 
+      }
+     
     });
     
     // Listen for chat message
@@ -147,6 +195,27 @@ io.on('connection', socket => {
         socket.broadcast.to(user.room).emit('drawingStart', data);
 
     });
+
+  socket.on('gameStart', () => {
+    const user = getCurrentUser(socket.id);
+    const room = getRoom(user.room);
+    console.log("게임스타트 소켓 + room 네임: ", room, " user: ", user);
+    io.to(user.room).emit('gameStart', "게임이 시작 되었습니다.");
+    socket.broadcast.to(user.room).emit('guessStart', );
+
+  });
+
+  socket.on('checkcorrect', () => {
+    // const user = getCurrentUser(socket.id);
+    // const room = getRoom(user.room);
+    // console.log("게임스타트 소켓 + room 네임: ", room, " user: ", user);
+    // io.to(user.room).emit('gameStart', "게임이 시작 되었습니다.");
+    // socket.broadcast.to(user.room).emit('guessStart',);
+
+  });
+
+
+
 
 
     
