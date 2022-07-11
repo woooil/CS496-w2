@@ -22,7 +22,7 @@ public class SignupActivity extends AppCompatActivity {
 
     private Button adduser;
     private final String BASE_URL = "http://192.249.18.196";
-    private Button idcheck;
+    private Button idcheck, nicknameCheck;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +73,24 @@ public class SignupActivity extends AppCompatActivity {
             }
         });
 
-
+        nicknameCheck = findViewById(R.id.nicknameCheck);
+        nicknameCheck.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Call<Object> call = jsonPlaceHolderApi.nickCheck(nickname.getText().toString());
+                call.enqueue(new Callback<Object>() {
+                    @Override
+                    public void onResponse(Call<Object> call, Response<Object> response) {
+                        Toast.makeText(getApplicationContext(), response.body().toString(), Toast.LENGTH_LONG).show();
+                    }
+        
+                    @Override
+                    public void onFailure(Call<Object> call, Throwable t) {
+                        Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        });
 
         adduser = (Button) this.findViewById(R.id.add_user);
         adduser.setOnClickListener(new View.OnClickListener() {
@@ -91,8 +108,10 @@ public class SignupActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<Object> call, Response<Object> response) {
                         Toast.makeText(getApplicationContext(), response.body().toString(), Toast.LENGTH_LONG).show();
-                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                        startActivity(intent);
+                        if (response.body().toString().equals("회원가입이 완료되었습니다.")) {
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            startActivity(intent);
+                        }
                     }
 
                     @Override

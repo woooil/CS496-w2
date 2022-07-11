@@ -98,6 +98,11 @@ public class DrawView extends View {
   }
   
   public void undo() {
+    undoDrawing();
+    socket.emit("undo");
+  }
+  
+  public void undoDrawing() {
     // check whether the List is empty or not
     // if empty, the remove method will return an error
     if (paths.size() != 0) {
@@ -170,6 +175,7 @@ public class DrawView extends View {
     // coordinates of the finger
     mX = x;
     mY = y;
+    invalidate();
   }
   
   // in this method we check
@@ -209,9 +215,15 @@ public class DrawView extends View {
       mX = x;
       mY = y;
     }
+    invalidate();
   }
   
   public void clear() {
+    clearDawing();
+    socket.emit("clear");
+  }
+  
+  public void clearDawing() {
     paths.clear();
     invalidate();
   }
@@ -221,6 +233,7 @@ public class DrawView extends View {
   // the end position
   private void touchUp() {
     mPath.lineTo(mX, mY);
+    invalidate();
   }
   
   // the onTouchEvent() method provides us with
@@ -237,15 +250,12 @@ public class DrawView extends View {
     switch (event.getAction()) {
       case MotionEvent.ACTION_DOWN:
         touchStart(x, y);
-        invalidate();
         break;
       case MotionEvent.ACTION_MOVE:
         touchMove(x, y);
-        invalidate();
         break;
       case MotionEvent.ACTION_UP:
         touchUp();
-        invalidate();
         break;
     }
     return true;

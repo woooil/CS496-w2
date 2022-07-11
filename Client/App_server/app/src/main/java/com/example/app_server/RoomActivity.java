@@ -1,11 +1,13 @@
 package com.example.app_server;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -47,7 +49,7 @@ public class RoomActivity extends AppCompatActivity {
   private final String BASE_URL = "http://192.249.18.196";
   private String room;
   private DrawView paint;
-  private ImageButton save, color, stroke, undo;
+  private ImageButton clear, color, stroke, undo;
   private RangeSlider rangeSlider;
   private Socket socket;
   private Boolean isArtist = false;
@@ -74,7 +76,7 @@ public class RoomActivity extends AppCompatActivity {
     paint = (DrawView) findViewById(R.id.draw_view);
     rangeSlider = (RangeSlider) findViewById(R.id.rangebar);
     undo = (ImageButton) findViewById(R.id.btn_undo);
-    save = (ImageButton) findViewById(R.id.btn_save);
+    clear = (ImageButton) findViewById(R.id.btn_clear);
     color = (ImageButton) findViewById(R.id.btn_color);
     stroke = (ImageButton) findViewById(R.id.btn_stroke);
     startBT = findViewById(R.id.startBT);
@@ -146,7 +148,7 @@ public class RoomActivity extends AppCompatActivity {
     socket.on("message", new Emitter.Listener() {
       @Override
       public void call(Object... args) {
-        outputMessage(args[0].toString());
+        outputMessage((JSONObject) args[0]);
       }
     });
   
@@ -156,10 +158,9 @@ public class RoomActivity extends AppCompatActivity {
 //        paint.drawMove(args);
         JSONObject data = (JSONObject) args[0];
         try {
-          Double x = (Double) data.get("x");
-          Double y = (Double) data.get("y");
+          Double x = Double.parseDouble(String.valueOf(data.get("x")));
+          Double y = Double.parseDouble(String.valueOf(data.get("y")));
           paint.drawMove(x.floatValue(), y.floatValue());
-          paint.invalidate();
         } catch (JSONException e) {
           e.printStackTrace();
         }
@@ -171,14 +172,26 @@ public class RoomActivity extends AppCompatActivity {
       public void call(Object... args) {
         JSONObject data = (JSONObject) args[0];
         try {
-          Double x = (Double) data.get("x");
-          Double y = (Double) data.get("y");
-//          paint.draw(paint.getmCanvas());
+          Double x = Double.parseDouble(String.valueOf(data.get("x")));
+          Double y = Double.parseDouble(String.valueOf(data.get("y")));
           paint.drawStart(x.floatValue(), y.floatValue());
-          paint.invalidate();
         } catch (JSONException e) {
           e.printStackTrace();
         }
+      }
+    });
+    
+    socket.on("undo", new Emitter.Listener() {
+      @Override
+      public void call(Object... args) {
+        paint.undoDrawing();
+      }
+    });
+    
+    socket.on("clear", new Emitter.Listener() {
+      @Override
+      public void call(Object... args) {
+        paint.clearDawing();
       }
     });
     
@@ -285,6 +298,12 @@ public class RoomActivity extends AppCompatActivity {
             .show();
       }
     });
+    clear.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        paint.clear();
+      }
+    });
     stroke.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
@@ -321,12 +340,31 @@ public class RoomActivity extends AppCompatActivity {
   
   
   
-  private void outputMessage(String message) {
-    Log.d(null, message);
+  private void outputMessage(JSONObject message) {
+    Log.d(null, message.toString());
     runOnUiThread(new Runnable() {
       @Override
       public void run() {
-        msgBox.setText(message);
+        try {
+          String name = message.get("username").toString();
+          String text = message.get("text").toString();
+          String msg = msgBox.getText().toString();
+          String msgReceived;
+          if (name.equals("BOT")) msgReceived = "\n" + text;
+          else msgReceived = "\n[" + name + "] " + text;
+          String newMsg = msg.substring(msg.indexOf("\n") + 1) + msgReceived;
+          msgBox.setText(newMsg);
+          if (name.equals("BOT")) return;
+          for (int i = 0; i < 4; i++) {
+            if (plIcon[i].getText().toString().equals(name)) {
+              plChat[i].setText(text);
+              return;
+            }
+          }
+          Toast.makeText(RoomActivity.this, "Message error!", Toast.LENGTH_SHORT).show();
+        } catch (JSONException e) {
+          e.printStackTrace();
+        }
       }
     });
   }
