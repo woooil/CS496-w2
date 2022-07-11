@@ -16,7 +16,10 @@ public interface JsonPlaceHolderApi {
     @POST("/auth/check")
     @FormUrlEncoded
     Call < Object > check(@Field("user_id") String user_id);
-
+    
+    @POST("/auth/nickname")
+    @FormUrlEncoded
+    Call < Object > nickCheck(@Field("nickname") String nickname);
 
 
     @POST("/auth/register")
