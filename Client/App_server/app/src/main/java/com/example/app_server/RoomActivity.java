@@ -49,7 +49,7 @@ public class RoomActivity extends AppCompatActivity {
   private final String BASE_URL = "http://192.249.18.196";
   private String room;
   private DrawView paint;
-  private ImageButton clear, color, stroke, undo;
+  private Button clear, color, stroke, undo;
   private RangeSlider rangeSlider;
   private Socket socket;
   private Boolean isArtist = false;
@@ -75,10 +75,10 @@ public class RoomActivity extends AppCompatActivity {
     roomTV = findViewById(R.id.roomTV);
     paint = (DrawView) findViewById(R.id.draw_view);
     rangeSlider = (RangeSlider) findViewById(R.id.rangebar);
-    undo = (ImageButton) findViewById(R.id.btn_undo);
-    clear = (ImageButton) findViewById(R.id.btn_clear);
-    color = (ImageButton) findViewById(R.id.btn_color);
-    stroke = (ImageButton) findViewById(R.id.btn_stroke);
+    undo = findViewById(R.id.btn_undo);
+    clear = findViewById(R.id.btn_clear);
+    color = findViewById(R.id.btn_color);
+    stroke = findViewById(R.id.btn_stroke);
     startBT = findViewById(R.id.startBT);
     drawingOptionLL = findViewById(R.id.drawingOptionLL);
     msgLL = findViewById(R.id.msgLL);
@@ -172,8 +172,13 @@ public class RoomActivity extends AppCompatActivity {
       public void call(Object... args) {
         JSONObject data = (JSONObject) args[0];
         try {
+          Log.d(null, "DRAWSTART" + data);
           Double x = Double.parseDouble(String.valueOf(data.get("x")));
           Double y = Double.parseDouble(String.valueOf(data.get("y")));
+          int color = Integer.parseInt(data.get("color").toString());
+          int width = Integer.parseInt(data.get("width").toString());
+          paint.setColor(color);
+          paint.setStrokeWidth(width);
           paint.drawStart(x.floatValue(), y.floatValue());
         } catch (JSONException e) {
           e.printStackTrace();

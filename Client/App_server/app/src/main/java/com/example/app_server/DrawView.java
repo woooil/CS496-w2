@@ -151,10 +151,12 @@ public class DrawView extends View {
     try {
       data.put("x", x);
       data.put("y", y);
+      data.put("color", currentColor);
+      data.put("width", strokeWidth);
+      socket.emit("drawingStart", data);
     } catch (JSONException e) {
       e.printStackTrace();
     }
-    socket.emit("drawingStart", data);
   }
   
   public void drawStart(float x, float y) {
@@ -197,10 +199,10 @@ public class DrawView extends View {
       try {
         data.put("x", x);
         data.put("y", y);
+        socket.emit("drawing", data);
       } catch (JSONException e) {
         e.printStackTrace();
       }
-      socket.emit("drawing", data);
     }
   }
   
