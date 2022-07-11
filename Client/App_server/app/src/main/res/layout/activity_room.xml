@@ -227,38 +227,38 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <ImageButton
+                <Button
                     android:id="@+id/btn_undo"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_weight="1"
-                    android:src="@color/color1"
+                    android:background="@color/color1"
                     android:text="Undo" />
 
-                <ImageButton
+                <Button
                     android:id="@+id/btn_clear"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_weight="1"
-                    android:src="@color/color2"
-                    android:text="Save" />
+                    android:background="@color/color2"
+                    android:text="Clear" />
 
-                <ImageButton
+                <Button
                     android:id="@+id/btn_color"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_weight="1"
-                    android:src="@color/color3"
+                    android:background="@color/color3"
                     android:text="Color" />
 
 
-                <ImageButton
+                <Button
                     android:id="@+id/btn_stroke"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_weight="1"
-                    android:src="@color/color4"
-                    android:text="Stroke" />
+                    android:background="@color/color4"
+                    android:text="굵기" />
             </LinearLayout>
 
             <LinearLayout
