@@ -110,6 +110,7 @@ public class SignupActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), response.body().toString(), Toast.LENGTH_LONG).show();
                         if (response.body().toString().equals("회원가입이 완료되었습니다.")) {
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            finish();
                             startActivity(intent);
                         }
                     }

@@ -21,6 +21,9 @@ public interface JsonPlaceHolderApi {
     @FormUrlEncoded
     Call < Object > nickCheck(@Field("nickname") String nickname);
 
+    @POST("/auth/kakaosignup")
+    @FormUrlEncoded
+    Call < Object > kakaosignup(@Field("nickname") String nickname);
 
     @POST("/auth/register")
     Call < Object > signup(@Body UserInfo info);
