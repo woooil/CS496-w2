@@ -23,7 +23,6 @@ const server = app.listen(4000,() =>{
     console.log("연결 성공");
 });;
 
-let answer;
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -127,10 +126,10 @@ io.on('connection', socket => {
     io.to(user.room).emit("information", room_info);
 
     // Welcome current user
-    socket.emit('message', formatMessage(botName, 'Welcome to ChatCord!'));
+    socket.emit('message', formatMessage(botName, '환영합니다'));
     
     // Broadcast when a user connects
-    socket.broadcast.to(user.room).emit('message', formatMessage(botName, `${user.username} has joined the chat`));
+    socket.broadcast.to(user.room).emit('message', formatMessage(botName, `${user.username} 님이 입장하였습니다.`));
       
       // Send users and room info
     //   io.to(user.room).emit('roomUsers', {
@@ -169,7 +168,7 @@ io.on('connection', socket => {
       }
       else{
         if (user) {
-          io.to(user.room).emit('message', formatMessage(botName, `${user.username} has left the chat`));
+          io.to(user.room).emit('message', formatMessage(botName, `${user.username} 님이 퇴장하였습니다.`));
         } 
       }
      
@@ -178,14 +177,16 @@ io.on('connection', socket => {
     // Listen for chat message
     socket.on('chatMessage', (msg) => {
       const user = getCurrentUser(socket.id);
+      const gameroom = getRoom(user.room);
       console.log("user: " , user,  "msg is : ", msg);
       io.to(user.room).emit('message', formatMessage(user.username, msg));
-      if (msg == answer) { // 정답일 떼
+      if (msg == gameroom.answer) { // 정답일 떼
 
         io.to(user.room).emit('correct', user.username);
-        const gameroom = getRoom(user.room);
         gameroom.artist = user.username;
+        gameroom.answer = null;
         console.log("새로운 아티스트 : ", gameroom.artist);
+        console.log("정답 null : ", gameroom.answer);
         
       }
     });
@@ -206,6 +207,20 @@ io.on('connection', socket => {
 
     });
 
+  socket.on('undo', () => {
+    const user = getCurrentUser(socket.id);
+    // console.log("스타트포인트 2 : ", data.x, " ", data.y);
+    socket.broadcast.to(user.room).emit('undo');
+
+  });
+
+  socket.on('clear', () => {
+    const user = getCurrentUser(socket.id);
+    // console.log("스타트포인트 2 : ", data.x, " ", data.y);
+    socket.broadcast.to(user.room).emit('clear');
+
+  });
+
   socket.on('gameStart', () => {
     const user = getCurrentUser(socket.id);
     const room = getRoom(user.room);
@@ -214,9 +229,9 @@ io.on('connection', socket => {
     socket.broadcast.to(user.room).emit('guessStart');
     db.query("select * from words", (err, word) =>{
       const rand = Math.floor(Math.random() * (word.length));
-      answer = word[rand].word;
-      console.log("랜덤 단어: ", answer);
-      socket.emit("drawStart", answer);
+      room.answer = word[rand].word;
+      console.log("랜덤 단어: ", word[rand].word);
+      socket.emit("drawStart", room.answer);
     })
    
   });

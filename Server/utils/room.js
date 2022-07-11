@@ -5,6 +5,7 @@ class Room {
         this.name = name;
         this.all_player = [];
         this.artist = artist;
+        this.answer = null;
     }
 
     userjoin(new_user) {
