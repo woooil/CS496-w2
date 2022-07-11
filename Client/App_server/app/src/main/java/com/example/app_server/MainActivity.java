@@ -10,12 +10,19 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.kakao.sdk.auth.model.OAuthToken;
+import com.kakao.sdk.user.UserApiClient;
+import com.kakao.sdk.user.model.User;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import kotlin.Unit;
+import kotlin.jvm.functions.Function2;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -26,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView signUpTV;
     private EditText userIdET, passwordET;
     private TextView submitTV;
+    private TextView kakaoTV;
     private final String BASE_URL = "http://192.249.18.196";
 
     @Override
@@ -43,6 +51,16 @@ public class MainActivity extends AppCompatActivity {
         userIdET = findViewById(R.id.idET);
         passwordET = findViewById(R.id.passwordET);
         submitTV = findViewById(R.id.submitTV);
+        kakaoTV = findViewById(R.id.kakaoTV);
+
+
+        kakaoTV.setOnClickListener(v -> {
+                if (UserApiClient.getInstance().isKakaoTalkLoginAvailable(this)) {
+                    UserApiClient.getInstance().loginWithKakaoTalk(this, kakaoCallback);
+                } else {
+                    UserApiClient.getInstance().loginWithKakaoAccount(this, kakaoCallback);
+                }
+        });
 
         // Click event for sign up button
         signUpTV.setOnClickListener(v -> {
@@ -109,6 +127,70 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                     });
+            }
+        });
+    }
+
+    Function2<OAuthToken, Throwable, Unit> kakaoCallback = new Function2<OAuthToken, Throwable, Unit>() {
+        @Override
+        public Unit invoke(OAuthToken oAuthToken, Throwable throwable) {
+            if (oAuthToken != null) {
+
+            }
+            if (throwable != null) {
+
+                Log.d("펑션", "Message : " + throwable.getLocalizedMessage());
+            }
+            getKaKaoProfile();
+            return null;
+        }
+    };
+
+    private void getKaKaoProfile() {
+        UserApiClient.getInstance().me(new Function2<User, Throwable, Unit>() {
+            @Override
+            public Unit invoke(User user, Throwable throwable) {
+                if (user != null) { //success
+                    Log.d("qnffjdh", "Kakao 이름 =" + user.getKakaoAccount().getProfile().getNickname());
+                    String nick = user.getKakaoAccount().getProfile().getNickname().toString();
+
+                    OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                            .connectTimeout(30, TimeUnit.MINUTES)
+                            .readTimeout(30, TimeUnit.SECONDS)
+                            .writeTimeout(30, TimeUnit.SECONDS)
+                            .build();
+
+                    Retrofit retrofit = new Retrofit.Builder()
+                            .baseUrl(BASE_URL)
+                            .client(okHttpClient)
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .build();
+
+                    JsonPlaceHolderApi jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
+
+                    Call<Object> call = jsonPlaceHolderApi.kakaosignup(nick);
+
+                    call.enqueue(new Callback<Object>() {
+                        @Override
+                        public void onResponse(Call<Object> call, Response<Object> response) {
+                            if(response.body().toString().equals("회원가입이 완료되었습니다.")){
+                                Intent intent = new Intent(getApplicationContext(), ListActivity.class);
+                                finish();
+                                startActivity(intent);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Object> call, Throwable t) {
+                            Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+
+                    });
+                }
+                if (throwable != null) {
+                    Log.d("인보크", "invoke: " + throwable.getLocalizedMessage());
+                }
+                return null;
             }
         });
     }
