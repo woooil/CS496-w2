@@ -13,7 +13,7 @@
 ## Development Env
 
 `Client`
-- OS: Android (minSdk: 26, targetSdk: 32)
+- OS: Android (minSdk: 21, targetSdk: 33)
 - Language: Java
 - IDE: Android Studio
 - Target Device: Galaxy S7
@@ -35,9 +35,9 @@
 |Field|Type|Null|Key|Default|Extra|
 |------|---|---|----|------|------|
 |id| int(11)|NO|PRI|NULL|auto_increment|
-|user_id| varchar(30)|NO| |NULL||
-|pwd|varchar(500)|NO| |NULL||
-|email| varchar(30)|NO| |NULL||
+|user_id| varchar(30)|YES| |NULL||
+|pwd|varchar(500)|YES| |NULL||
+|email| varchar(30)|YES| |NULL||
 |nickname| varchar(30)|NO|  |NULL||
 
 
@@ -48,7 +48,13 @@
 <br> /auth/check  - Check the duplicate ID
 
 - `POST`
+<br> /auth/nickname  - Check the duplicate nickname
+
+- `POST`
 <br> /auth/register  - Sign up & check Password validation 
+
+- `POST`
+<br> /auth/kakosignup  - kakao signup
 
 - `POST`
 <br> /auth/login  - check the presence of a user in DB & Sign in
