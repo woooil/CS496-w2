@@ -108,6 +108,11 @@
         socket.broadcast.to(user.room).emit('guessStart');
         socket.emit("drawStart", room.answer);
     });
+    ///////////////////////////////////////////////////////////////////
+    socket.on('redCard', (exit_user) => {
+        clientSocket.emit("redCard");
+     });
+
 
 
 
