@@ -255,6 +255,35 @@ io.on('connection', socket => {
     
   });
 
+  socket.on('canJoin', (room_name) => {
+    const selected_room = getRoom(room_name);
+    let boolean = true;
+    let overflow = false;
+    if (selected_room == null){
+      boolean = true;
+      overflow = false;
+    }
+    else if (selected_room.all_player.length >= 4) {
+      boolean = false;
+      overflow = true;
+    }
+    else if (selected_room.answer != null)
+    {
+      boolean = false;
+      overflow = false;
+    }
+    else{
+      boolean = true;
+    }
+    const data = {
+      name: room_name,
+      tf: boolean,
+      over: overflow
+    }
+    socket.emit('canJoin', data);
+
+  });
+
 
 
 
