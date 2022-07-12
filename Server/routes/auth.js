@@ -82,7 +82,7 @@ router.post('/kakaosignup', function (req, res) {
  
         db.query("select * from users where nickname = ? ", [req.body.nickname], (err2, result2) => {
             if (result2.length != 0) {
-                res.json("이미 존재하는 닉네임입니다.");
+                res.json("회원가입이 완료되었습니다.");
                 return;
             }
             db.query("insert into users (nickname) values(?)", [req.body.nickname], (err, result) => {

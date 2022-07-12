@@ -12,11 +12,12 @@ let users = require('./routes/users');
 let authrouter = require('./routes/auth');
 let list = require('./routes/list');
 let db = require('./model/db');
-const { userJoin, getCurrentUser, userLeave, getRoomUsers } = require('./utils/users');
+const { userJoin, getCurrentUser, userLeave, getRoomUsers, getUserbyname } = require('./utils/users');
 const formatMessage = require('./utils/messages');
-const { Room, Roomcreate, getRoom, UserJoinRoom, printallroom, InspectArtist, DeleteRoom } = require('./utils/room');
+const { Room, Roomcreate, getRoom, UserJoinRoom, printallroom, InspectArtist, DeleteRoom, howManypeople } = require('./utils/room');
 const { exit } = require('process');
 const internal = require('stream');
+const { compileClient } = require('jade');
 
 let app = express();
 const server = app.listen(4000,() =>{
@@ -90,6 +91,12 @@ const botName = "BOT";
 
 
 io.on('connection', socket => {
+
+  socket.on("howMany", () =>{
+    socket.emit("howMany", howManypeople());
+  }) 
+
+
     socket.on('joinRoom', (new_user) => {
     console.log("username: ", new_user);
   
@@ -123,6 +130,7 @@ io.on('connection', socket => {
 
     socket.join(user.room);
 
+    console.log("들어갈 때 : ", user.room);
     io.to(user.room).emit("information", room_info);
 
     // Welcome current user
@@ -130,16 +138,12 @@ io.on('connection', socket => {
     
     // Broadcast when a user connects
     socket.broadcast.to(user.room).emit('message', formatMessage(botName, `${user.username} 님이 입장하였습니다.`));
-      
-      // Send users and room info
-    //   io.to(user.room).emit('roomUsers', {
-    //     room: user.room,
-    //     users: getRoomUsers(user.room)
-    //   });
+    io.emit("howMany", howManypeople());
+
     });
   
     // Runs when client disconnects
-    socket.on('disconnect', () => {
+    socket.on('quit', () => {
       console.log("나가기");
       const exit_user = getCurrentUser(socket.id);
       const exit_room = getRoom(exit_user.room);
@@ -151,8 +155,7 @@ io.on('connection', socket => {
       }
       else exit_room.userleave(exit_user);
       
-      
-    
+      socket.leave(exit_room.name);
       const user = userLeave(socket.id);
       console.log("exit_user : ", exit_user, " | exit_room: ", exit_room );
 
@@ -161,6 +164,7 @@ io.on('connection', socket => {
         all_player: exit_room.all_player,
         artist: exit_room.artist
       }
+      console.log("나가는 방 : ", exit_room.name);
       socket.broadcast.to(exit_room.name).emit("information", room_info);
 
       if (exit_room.checkemptyplayer() == true){ //아무도 없을 때
@@ -171,6 +175,8 @@ io.on('connection', socket => {
           io.to(user.room).emit('message', formatMessage(botName, `${user.username} 님이 퇴장하였습니다.`));
         } 
       }
+
+      io.emit("howMany", howManypeople());
      
     });
     
@@ -234,6 +240,48 @@ io.on('connection', socket => {
       socket.emit("drawStart", room.answer);
     })
    
+  });
+
+  socket.on('redCard', (exit_user) => {
+    const user = getCurrentUser(socket.id);
+    const cur_room = getRoom(user.room);
+    const user_object = getUserbyname(exit_user);
+    // cur_room.userleave(exit_user);
+    // userLeave(user_object.id);
+    console.log("강퇴 당하는 유저 : ", user_object);
+    let clientSocket = io.sockets.sockets.get(user_object.id);
+    clientSocket.emit("redCard");
+
+    
+  });
+
+  socket.on('canJoin', (room_name) => {
+    const selected_room = getRoom(room_name);
+    let boolean = true;
+    let overflow = false;
+    if (selected_room == null){
+      boolean = true;
+      overflow = false;
+    }
+    else if (selected_room.all_player.length >= 4) {
+      boolean = false;
+      overflow = true;
+    }
+    else if (selected_room.answer != null)
+    {
+      boolean = false;
+      overflow = false;
+    }
+    else{
+      boolean = true;
+    }
+    const data = {
+      name: room_name,
+      tf: boolean,
+      over: overflow
+    }
+    socket.emit('canJoin', data);
+
   });
 
 

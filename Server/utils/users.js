@@ -14,6 +14,10 @@ function getCurrentUser(id) {
   return users.find(user => user.id === id);
 }
 
+function getUserbyname(name) {
+  return users.find(user => user.username === name);
+}
+
 // User leaves chat
 function userLeave(id) {
   const index = users.findIndex(user => user.id === id);
@@ -30,6 +34,7 @@ function getRoomUsers(room) {
 module.exports = {
   userJoin,
   getCurrentUser,
+  getUserbyname,
   userLeave,
   getRoomUsers
 };
