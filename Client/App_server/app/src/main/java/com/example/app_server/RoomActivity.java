@@ -102,6 +102,7 @@ public class RoomActivity extends AppCompatActivity {
     socket.on("information", new Emitter.Listener() {
       @Override
       public void call(Object... args) {
+        
         JSONObject data = (JSONObject) args[0];
         try {
           JSONArray all_player = (JSONArray) data.get("all_player");

@@ -31,6 +31,8 @@ public class ListActivity extends AppCompatActivity {
   private UsersModal user;
   private final String BASE_URL = "http://192.249.18.196";
   private static Socket socket;
+  private final String Room1 = "ROOM1";
+  private final String Room2 = "ROOM2";
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -74,22 +76,48 @@ public class ListActivity extends AppCompatActivity {
         }
       }
     });
+    
+    socket.on("canJoin", new Emitter.Listener() {
+      @Override
+      public void call(Object... args) {
+        JSONObject data = (JSONObject) args[0];
+        try {
+          Boolean b = Boolean.parseBoolean(data.get("tf").toString());
+          String roomname = data.get("name").toString();
+          Boolean overflow = Boolean.parseBoolean(data.get("over").toString());
+          if (b) {
+            Intent i = new Intent(ListActivity.this, RoomActivity.class);
+            i.putExtra("Room", roomname);
+            startActivity(i);
+          } else {
+            runOnUiThread(new Runnable() {
+              @Override
+              public void run() {
+                String msg;
+                if (overflow) msg = "방이 꽉 찼습니다!";
+                else msg = "방에서 게임이 진행 중입니다!";
+                Toast.makeText(ListActivity.this, msg, Toast.LENGTH_SHORT).show();
+              }
+            });
+          }
+        } catch (JSONException e) {
+          e.printStackTrace();
+        }
+  
+      }
+    });
 
     nicknameTV.setText(user.getNickname());
     room1BT.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
-        Intent i = new Intent(ListActivity.this, RoomActivity.class);
-        i.putExtra("Room", "ROOM1");
-        startActivity(i);
+        socket.emit("canJoin", Room1);
       }
     });
     room2BT.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
-        Intent i = new Intent(ListActivity.this, RoomActivity.class);
-        i.putExtra("Room", "ROOM2");
-        startActivity(i);
+        socket.emit("canJoin", Room2);
       }
     });
     logoutBT.setOnClickListener(v -> {
