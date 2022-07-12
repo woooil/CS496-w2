@@ -36,7 +36,7 @@ public class SharedPrefManager {
   
   public boolean isLoggedIn() {
     SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
-    return sharedPreferences.getString(KEY_USERID, null) != null;
+    return sharedPreferences.getString(KEY_NICKNAME, null) != null;
   }
   
   public UsersModal getUser() {

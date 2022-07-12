@@ -174,6 +174,9 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<Object> call, Response<Object> response) {
                             if(response.body().toString().equals("회원가입이 완료되었습니다.")){
+                                UsersModal user = new UsersModal(null, null, nick);
+
+                                SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
                                 Intent intent = new Intent(getApplicationContext(), ListActivity.class);
                                 finish();
                                 startActivity(intent);
