@@ -14,7 +14,6 @@ class Room {
         this.all_player.push(new_user);
     }
     userleave(exit_user){
-        console.log("userleave method : exit_user: ", exit_user);
         const index = this.all_player.findIndex(user => user === exit_user.username);
         
         if (index !== -1) {
@@ -58,7 +57,6 @@ function printallroom(){
         for(let j = 0; j < allroom[i].all_player.length; j++){
             console.log("룸 모든 플레이어: ", allroom[i].all_player);
         }
-        console.log("룸 아티스트: ", allroom[i].artist);
     }
     
 }
@@ -70,7 +68,6 @@ function DeleteRoom(room_name){
         allroom.splice(index, 1)[0];
     }
     console.log("방 삭제 성공");
-    printallroom();
 }
 
 function howManypeople(){

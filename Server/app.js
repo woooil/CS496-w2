@@ -96,12 +96,10 @@ io.on('connection', socket => {
     socket.emit("howMany", howManypeople());
   }) 
 
-
     socket.on('joinRoom', (new_user) => {
     console.log("username: ", new_user);
   
     const alreadyexist_room = getRoom(new_user.room);
-    console.log("alreadyexist_room : ", alreadyexist_room)
 
       if (alreadyexist_room == undefined){  // 룸이 없을 때 새로운 룸을 만들고 한명 들어감
       Roomcreate(new Room(new_user.room, new_user.username));
@@ -130,7 +128,7 @@ io.on('connection', socket => {
 
     socket.join(user.room);
 
-    console.log("들어갈 때 : ", user.room);
+
     io.to(user.room).emit("information", room_info);
 
     // Welcome current user
@@ -157,14 +155,12 @@ io.on('connection', socket => {
       
       socket.leave(exit_room.name);
       const user = userLeave(socket.id);
-      console.log("exit_user : ", exit_user, " | exit_room: ", exit_room );
 
 
       let room_info = {
         all_player: exit_room.all_player,
         artist: exit_room.artist
       }
-      console.log("나가는 방 : ", exit_room.name);
       socket.broadcast.to(exit_room.name).emit("information", room_info);
 
       if (exit_room.checkemptyplayer() == true){ //아무도 없을 때
@@ -192,7 +188,6 @@ io.on('connection', socket => {
         gameroom.artist = user.username;
         gameroom.answer = null;
         console.log("새로운 아티스트 : ", gameroom.artist);
-        console.log("정답 null : ", gameroom.answer);
         
       }
     });
@@ -230,7 +225,6 @@ io.on('connection', socket => {
   socket.on('gameStart', () => {
     const user = getCurrentUser(socket.id);
     const room = getRoom(user.room);
-    console.log("게임스타트 소켓 + room 네임: ", room, " user: ", user);
     io.to(user.room).emit('gameStart');
     socket.broadcast.to(user.room).emit('guessStart');
     db.query("select * from words", (err, word) =>{
