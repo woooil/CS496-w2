@@ -10,7 +10,8 @@
 
 ## Overview
 * * *
-This app is almost the same as the Catchmind game. This app Supports multiple users through socket programming
+This app is almost the same as the Catchmind game. 
+<br>This app Supports multiple users through socket programming
 
 <br>
 
@@ -34,29 +35,44 @@ This app is almost the same as the Catchmind game. This app Supports multiple us
 
 ## App 
 * * *
+<div style = "text-align: center;">
+<image src = "./Server/public/images/loginpage.jpg" width ="250dp"> 
+<image src = "./Server/public/images/signuppage.jpg" width ="250dp"> 
+</div>
 
-
-홈 화면
+Login & Signup Page
 - check mulitple id and nickname
 - kakao login by using kakao SDK
 - store hashed password in Database
 - Automatic login using SharedPrefManager
 
+<br>
+<div style = "text-align: center;">
+<image src = "./Server/public/images/listpage.jpg" width ="250dp"> 
+</div>
 
-리스트 화면
+List Page
 - It shows the real-time number of people in each room
 - cannot join room if the game is in the room.
 - cannot join room if the number of users in the room is 4 or more
 - User can play Catchmind with others in each room
 
-게임 화면
+<br>
+
+<br>
+<div style = "text-align: center;">
+<image src = "./Server/public/images/beforestart.jpg" width ="250dp"> 
+<image src = "./Server/public/images/playing.jpg" width ="250dp"> 
+</div>
+
+Room page
+
 - It shows drawing in real-time
 - Only artist can press the 'Start' button.
-- Artist can control pen Color and Width
+- Artist can control pen Color and Width and can undo or clear drawing.
 - The user except the artist can send the right answer.
 - The user who get the right answer will be the next artist.
 - Artist can banish user.
-
 
 <br>
 
