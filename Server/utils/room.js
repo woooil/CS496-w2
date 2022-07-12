@@ -1,3 +1,5 @@
+const { all } = require("../routes");
+
 const allroom = [];
 
 class Room {
@@ -71,6 +73,28 @@ function DeleteRoom(room_name){
     printallroom();
 }
 
+function howManypeople(){
+    let howMany = [];
+ 
+        if (allroom[0] == null)
+        {
+            howMany = [0,0];
+        }
+        else{
+            if(allroom[0].name == "ROOM2"){
+                howMany = [0, allroom[0].all_player.length];
+            }
+            else{
+                if (allroom[1] == null)
+                howMany = [allroom[0].all_player.length, 0];
+                else
+                    howMany = [allroom[0].all_player.length, allroom[1].all_player.length];
+            }
+        }
+    console.log("how many ?? : ", howMany);
+    return howMany;
+}
+
 
 
 module.exports ={
@@ -80,5 +104,6 @@ module.exports ={
     UserJoinRoom,
     printallroom,
     InspectArtist,
-    DeleteRoom
+    DeleteRoom,
+    howManypeople
 }
