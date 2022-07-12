@@ -41,7 +41,7 @@ This app is almost the same as Catch Mind game of Netmarble.
 </div>
 
 Login & Signup Page
-- Checks mulitple id and nickname.
+- Checks duplicate id and nickname.
 - Login with Kakao by using Kakao SDK.
 - Stores hashed passwords in a database.
 - Supports automatic login using SharedPrefManager.
