@@ -10,8 +10,8 @@
 
 ## Overview
 * * *
-This app is almost the same as the Catchmind game. 
-<br>This app Supports multiple users through socket programming
+This app is almost the same as Catch Mind game of Netmarble. 
+<br>This app supports multiple users through socket programming.
 
 <br>
 
@@ -29,7 +29,7 @@ This app is almost the same as the Catchmind game.
 - Language: JavaScript
 - Framework: Express
 - Database: MySQL
-- Package : Socket.IO, bcrypt(for hashed password), 
+- Package : Socket.IO, bcrypt(for hashed password)
 
 <br>
 
@@ -41,10 +41,10 @@ This app is almost the same as the Catchmind game.
 </div>
 
 Login & Signup Page
-- check mulitple id and nickname
-- kakao login by using kakao SDK
-- store hashed password in Database
-- Automatic login using SharedPrefManager
+- Checks mulitple id and nickname.
+- Login with Kakao by using Kakao SDK.
+- Stores hashed passwords in a database.
+- Supports automatic login using SharedPrefManager.
 
 <br>
 <div style = "text-align: center;">
@@ -52,10 +52,10 @@ Login & Signup Page
 </div>
 
 List Page
-- It shows the real-time number of people in each room
-- cannot join room if the game is in the room.
-- cannot join room if the number of users in the room is 4 or more
-- User can play Catchmind with others in each room
+- Shows the number of people in each room in real-time.
+- Does not allow to join room if the game is in the room.
+- Does not allow to join room if the number of users in the room is 4 or more.
+- Users can play Catchmind game with others in each room.
 
 <br>
 
@@ -67,11 +67,11 @@ List Page
 
 Room page
 
-- It shows drawing in real-time
+- Shows drawing in real-time.
 - Only artist can press the 'Start' button.
-- Artist can control pen Color and Width and can undo or clear drawing.
-- The user except the artist can send the right answer.
-- The user who get the right answer will be the next artist.
+- Artist can control pen color and width and can undo or clear drawing.
+- Users except the artist can send the answer.
+- Users who get the right answer will be the next artist.
 - Artist can banish user.
 
 <br>
