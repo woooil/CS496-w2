@@ -46,7 +46,6 @@ public class RoomActivity extends AppCompatActivity {
   private EditText msgET;
   private Button msgBT, startBT;
   private UsersModal user;
-  private final String BASE_URL = "http://192.249.18.196";
   private String room;
   private DrawView paint;
   private Button clear, color, stroke, undo;
@@ -63,10 +62,6 @@ public class RoomActivity extends AppCompatActivity {
     Intent i = getIntent();
     room = i.getStringExtra("Room");
     
-    if (!SharedPrefManager.getInstance(this).isLoggedIn()) {
-      finish();
-      startActivity(new Intent(this, MainActivity.class));
-    }
     
     user = SharedPrefManager.getInstance(this).getUser();
     msgBT = findViewById(R.id.msgBT);
@@ -102,15 +97,12 @@ public class RoomActivity extends AppCompatActivity {
     
     roomTV.setText(room);
     
-    socket = IO.socket(URI.create(BASE_URL));
-    socket.connect();
-    Log.d(null, "socket created!");
-    socket.emit("hello", user.getNickname());
-    Log.d(null, "socket emitted!");
+    socket = ListActivity.getSocket();
     
     socket.on("information", new Emitter.Listener() {
       @Override
       public void call(Object... args) {
+        
         JSONObject data = (JSONObject) args[0];
         try {
           JSONArray all_player = (JSONArray) data.get("all_player");
@@ -224,8 +216,13 @@ public class RoomActivity extends AppCompatActivity {
             String winner = args[0].toString();
             Toast.makeText(RoomActivity.this, winner + "님이 정답을 맞췄습니다!", Toast.LENGTH_SHORT).show();
             updateDrawState(false);
-            if (user.getNickname().equals(winner))
+            if (user.getNickname().equals(winner)) {
+              isArtist = true;
               startBT.setVisibility(View.VISIBLE);
+            } else {
+              isArtist = false;
+              startBT.setVisibility(View.INVISIBLE);
+            }
           }
         });
       }
@@ -267,6 +264,33 @@ public class RoomActivity extends AppCompatActivity {
             paint.clear();
           }
         });
+      }
+    });
+    
+    for (int j = 1; j < 4; j++) {
+      int finalJ = j;
+      plIcon[j].setOnLongClickListener(new View.OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View view) {
+          if (!isArtist) return false;
+          socket.emit("redCard", plIcon[finalJ].getText().toString());
+          return false;
+        }
+      });
+    }
+    
+    socket.on("redCard", new Emitter.Listener() {
+      @Override
+      public void call(Object... args) {
+        runOnUiThread(
+            new Runnable() {
+              @Override
+              public void run() {
+                Toast.makeText(RoomActivity.this, "방장으로부터 퇴장 당하였습니다.", Toast.LENGTH_SHORT).show();
+                onBackPressed();
+              }
+            }
+        );
       }
     });
   
@@ -377,7 +401,8 @@ public class RoomActivity extends AppCompatActivity {
   @Override
   public void onBackPressed() {
     super.onBackPressed();
-    socket.disconnect();
+    socket.emit("quit");
+    finish();
   }
   
   private void updatePlayers(String[] players, String artist) {
