@@ -26,6 +26,21 @@ router.post('/check', function (req, res) {
 
 });
 
+router.post('/nickname', function (req, res) {
+
+
+    console.log("닉네임 체크");
+    db.query("select * from users where nickname = ?", [req.body.nickname], (err1, result1) => {
+        if (err1) throw err1;
+        if (result1.length != 0) {
+            res.json("이미 존재하는 닉네임입니다.");
+            return;
+        }
+        res.json("사용 가능한 닉네임입니다.");
+    });
+
+});
+
 //sign up
 router.post('/register', function (req, res) {
     console.log("레지스터");
@@ -42,25 +57,46 @@ router.post('/register', function (req, res) {
             res.json("이미 존재하는 아이디입니다.");
             return;
         }
-        // console.log("req는: ", req);
-        const encryptedPwd = bcrypt.hashSync(req.body.pwd1, 10);
-        console.log("encryptedpwd : ", encryptedPwd);
-        db.query("insert into users (user_id, pwd, email, nickname) values(?, ?, ?, ?)", [req.body.user_id, encryptedPwd, req.body.email, req.body.nickname], (err, result) => {
-            if (err) throw err;
+        db.query("select * from users where nickname = ? ", [req.body.nickname], (err2, result2) =>{
+        if (result2.length != 0){
+            res.json("이미 존재하는 닉네임입니다.");
+            return;
+        }
+            const encryptedPwd = bcrypt.hashSync(req.body.pwd1, 10);
+            console.log("encryptedpwd : ", encryptedPwd);
+            db.query("insert into users (user_id, pwd, email, nickname) values(?, ?, ?, ?)", [req.body.user_id, encryptedPwd, req.body.email, req.body.nickname], (err, result) => {
+                if (err) throw err;
 
-            res.json("회원가입이 완료되었습니다.");
+                res.json("회원가입이 완료되었습니다.");
+            })
         })
 
-  
-    
+       
   });
+
+});
+
+router.post('/kakaosignup', function (req, res) {
+
+    
+ 
+        db.query("select * from users where nickname = ? ", [req.body.nickname], (err2, result2) => {
+            if (result2.length != 0) {
+                res.json("회원가입이 완료되었습니다.");
+                return;
+            }
+            db.query("insert into users (nickname) values(?)", [req.body.nickname], (err, result) => {
+                if (err) throw err;
+                res.json("회원가입이 완료되었습니다.");
+            })
+        })
+
 
 });
 
 
 //sign in
 router.post('/login', (req, res, next) => {
-    console.log("sssss");
     var post_data = req.body;
     var user_id = post_data.user_id;
     var user_password = post_data.password;
